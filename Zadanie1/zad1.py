@@ -5,6 +5,14 @@ import seaborn as sns
 data = pd.read_csv("data/data.csv", sep=',')
 colnames = ['Sex', 'Length [mm]', 'Diameter [mm]', 'Height [mm]', 'Whole weight [g]', 'Shucked weight [g]',
             'Viscera weight [g]', 'Shell weight [g]', 'Rings']
+df = data.select_dtypes(include=['number'])  # wybieramy tylko kolumny posiadajace wartosci numeryczne
+
+
+def adjust_for_histrogram(column, bins):
+    mininum = column.min()
+    maximum = column.max()
+    bin_size = (maximum - mininum) / bins
+    return [mininum, maximum, bin_size]
 
 
 def qualitative_characteristics():
@@ -24,18 +32,16 @@ def qualitative_characteristics():
 
 def quantitative_characteristics():
     result = []
-    for i, col in enumerate(data.columns):
-        if data.columns.get_loc(col) != 0:
-            result.append(
-                [colnames[i], data[col].mean(), data[col].std(), data[col].min(), data[col].quantile(0.25),
-                 data[col].median(), data[col].quantile(0.75), data[col].max()])
+    for i, col in enumerate(df.columns):
+        result.append([colnames[i + 1], df[col].mean(), df[col].std(), df[col].min(), df[col].quantile(0.25),
+                       df[col].median(), df[col].quantile(0.75), df[col].max()])
     return result
 
 
 def point_3():
     qualitative = qualitative_characteristics()
     categories = ['M', 'F', 'I']
-    plt.bar(categories, qualitative[0])
+    plt.bar(categories, qualitative[0], edgecolor='black')
     plt.xlabel('Count')
     plt.ylabel('Categories')
     plt.title('Counts of occurrences')
@@ -46,39 +52,49 @@ def point_4():
     fig, axs = plt.subplots(4, 2, figsize=(15, 15))
     fig.suptitle('Histograms')
     j = 0
-    for i in range(len(data.columns[1:])):
-        axs[j, i % 2].hist(data.iloc[:, i + 1], bins=10, edgecolor='black', log=True)
-        axs[j, i % 2].set_title(colnames[i + 1])
+    for i in range(len(df.columns)):
+        axs[j, i % 2].hist(df.iloc[:, i], bins=10, edgecolor='black', log=True)
+        axs[j, i % 2].set_xlabel(colnames[i + 1])
+        arr = adjust_for_histrogram(df.iloc[:, i], 10)
+        axs[j, i % 2].set_xticks([round(arr[0] + arr[2] * i, 2) for i in range(11)])
         j += i % 2
     plt.show()
 
 
-def point_5():  # nie dziala
-    fig, axs = plt.subplots(14, 2, figsize=(12, 36))
+def point_5():
+    fig, axs = plt.subplots(14, 2, figsize=(20, 70))
     fig.suptitle('Scatter plots')
+    k, x = 0, 0
     for i in range(8):
         for j in range(i + 1, 8):
-            axs[i, 0].scatter(data.iloc[:, i + 1], data.iloc[:, j + 1])
-            axs[i, 0].set_title(colnames[i] + " - " + colnames[j])
+            axs[x, k % 2].scatter(df.iloc[:, i], df.iloc[:, j])
+            axs[x, k % 2].set_xlabel(colnames[i + 1])
+            axs[x, k % 2].set_ylabel(colnames[j + 1])
+            k += 1
+            if k % 2 == 0:
+                x += 1
     plt.show()
 
 
 def point_6():
-    data.columns = colnames
-    print(data.corr())
+    df.columns = colnames[1:]
+    print(df.corr())
 
 
 def point_7():
-    sns.heatmap(data.corr(), annot=True)
+    sns.heatmap(df.corr(), annot=True)
     plt.show()
 
 
 def point_8():
-    sns.regplot(x=data['Length [mm]'], y=data['Diameter [mm]'])
+    sns.regplot(x=df['Length [mm]'], y=df['Diameter [mm]'])
     plt.show()
 
 
 def main():
+    qualitative = qualitative_characteristics()
+    for el in qualitative:
+        print(el)
     quantitative = quantitative_characteristics()
     for el in quantitative:
         print(el)
@@ -92,9 +108,8 @@ def main():
 
     point_4()
 
-    # 5. Using a package chosen among Matplotlib, Pandas, or Seaborn, create a scatter plot for each pair of the
-    # quantitative variables in the dataset. All scatter plots should be placed in a single figure spanning 14 rows
-    # and 2 columns.
+    # 5. Scatter plot for each pair of the quantitative variables in the dataset. All scatter plots should be placed
+    # in a single figure spanning 14 rows and 2 columns.
 
     point_5()
 
