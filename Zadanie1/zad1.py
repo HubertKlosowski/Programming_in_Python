@@ -16,18 +16,8 @@ def adjust_for_histrogram(column, bins):
 
 
 def qualitative_characteristics():
-    column = data.iloc[:, 0]
-    arr = [[0.0 for _ in range(0, 3)] for _ in range(0, 2)]
-    for el in column:
-        if el == "M":
-            arr[0][0] += 1
-        elif el == "F":
-            arr[0][2] += 1
-        else:
-            arr[0][1] += 1
-    for i in range(0, 3):
-        arr[1][i] = round((arr[0][i] / len(column)) * 100, 3)
-    return arr
+    tmp = data['Sex'].value_counts().values
+    return [tmp, tmp / tmp.sum() * 100]
 
 
 def quantitative_characteristics():
@@ -55,7 +45,7 @@ def point_4():
         axs[j, i % 2].hist(df.iloc[:, i], bins=10, edgecolor='black', log=True)
         axs[j, i % 2].set_xlabel(colnames[i + 1])
         arr = adjust_for_histrogram(df.iloc[:, i], 10)
-        axs[j, i % 2].set_xticks([round(arr[0] + arr[2] * i, 2) for i in range(11)])
+        axs[j, i % 2].set_xticks([round(arr[0] + arr[2] * i, 3) for i in range(11)])
         j += i % 2
     plt.show()
 
@@ -90,15 +80,22 @@ def point_8():
 
 
 def point_9():
-    tmp = [['M'], ['F'], ['I']]
-    for el in tmp:
-        table = data[data['Sex'].isin(el)].iloc[:, 1:].describe().drop('count')
-        print(table)
+    tmp = ['F', 'I', 'M']
+    final = []
+    for col in data.columns[1:]:
+        for el in tmp:
+            stats = data[data['Sex'] == el][col].describe().drop('count').values
+            stats = [round(l, 3) for l in stats]
+            stats.insert(0, el)
+            stats.insert(0, col)
+            final.append(stats)
+    return final
 
 
 def main():
     data.columns = colnames
     df.columns = colnames[1:]
+
     qualitative = qualitative_characteristics()
     for el in qualitative:
         print(el)
@@ -133,7 +130,7 @@ def main():
     point_8()
 
     # 9. Table with summary statistics for the quantitative variables in the dataset split by the categories of the
-    # qualitative variable
+    # qualitative variable"""
 
     point_9()
 
