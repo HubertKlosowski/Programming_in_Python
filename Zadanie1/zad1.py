@@ -5,9 +5,8 @@ import seaborn as sns
 data = pd.read_csv("data/data.csv", sep=',')
 unit_colnames = ['Sex', 'Length [mm]', 'Diameter [mm]', 'Height [mm]', 'Whole weight [g]', 'Shucked weight [g]',
                  'Viscera weight [g]', 'Shell weight [g]', 'Rings']
-no_unit_colnames = ['Sex', 'Length', 'Diameter', 'Height', 'Whole weight', 'Shucked weight', 'Viscera weight',
-                    'Shell weight', 'Rings']
-data.columns = no_unit_colnames
+data.columns = ['Sex', 'Length', 'Diameter', 'Height', 'Whole weight', 'Shucked weight', 'Viscera weight',
+                'Shell weight', 'Rings']
 
 
 def adjust_for_histrogram(column_data, bins):
@@ -88,7 +87,7 @@ def point_9():
     col1 = ['Female', 'Infant', 'Male']
     final = []
     for i, column in enumerate(data.columns[1:]):
-        col0 = [no_unit_colnames[i + 1], '', '']
+        col0 = [data.columns[i + 1], '', '']
         for o, el in enumerate(tmp):
             stats = data[data['Sex'] == el][column].describe().drop('count').values
             stats = [round(i, 3) for i in stats]
@@ -98,14 +97,24 @@ def point_9():
     return final
 
 
+def group_data(colname, sex):
+    result = []
+    for element in sex:
+        result.append(data[data['Sex'] == element][colname])
+    return result
+
+
 def point_10():
-    fig, axs = plt.subplots(4, 2, figsize=(15, 15))
-    for el in data.columns:
-        print(el)
+    titles = ['Female', 'Infant', 'Male']
+    fig, axs = plt.subplots(4, 2, figsize=(30, 20))
+    for i, col in enumerate(data.columns[1:]):
+        axs[int(i / 2), i % 2].boxplot(group_data(col, ['F', 'I', 'M']), labels=titles)
+        axs[int(i / 2), i % 2].set_title(col)
+    plt.show()
 
 
 def main():
-
+    """
     qualitative = qualitative_characteristics()
     for el in qualitative:
         print(el)
@@ -145,6 +154,7 @@ def main():
     point_9()
 
     # 10. Boxplot of each quantitative variable in the dataset, grouping every one of them by the qualitative variable.
+"""
 
     point_10()
 
