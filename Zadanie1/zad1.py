@@ -114,7 +114,6 @@ def point_10():
 
 
 def main():
-    """
     qualitative = qualitative_characteristics()
     for el in qualitative:
         print(el)
@@ -154,7 +153,6 @@ def main():
     point_9()
 
     # 10. Boxplot of each quantitative variable in the dataset, grouping every one of them by the qualitative variable.
-"""
 
     point_10()
 
