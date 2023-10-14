@@ -2,28 +2,31 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-colnames = ['Sex', 'Length [mm]', 'Diameter [mm]', 'Height [mm]', 'Whole weight [g]', 'Shucked weight [g]',
-            'Viscera weight [g]', 'Shell weight [g]', 'Rings']
 data = pd.read_csv("data/data.csv", sep=',')
-df = data.select_dtypes(include=['number'])  # wybieramy tylko kolumny posiadajace wartosci numeryczne
+unit_colnames = ['Sex', 'Length [mm]', 'Diameter [mm]', 'Height [mm]', 'Whole weight [g]', 'Shucked weight [g]',
+                 'Viscera weight [g]', 'Shell weight [g]', 'Rings']
+no_unit_colnames = ['Sex', 'Length', 'Diameter', 'Height', 'Whole weight', 'Shucked weight', 'Viscera weight',
+                    'Shell weight', 'Rings']
+data.columns = no_unit_colnames
 
 
-def adjust_for_histrogram(column, bins):
-    mininum = column.min()
-    maximum = column.max()
+def adjust_for_histrogram(column_data, bins):
+    mininum = column_data.min()
+    maximum = column_data.max()
     bin_size = (maximum - mininum) / bins
     return [mininum, maximum, bin_size]
 
 
 def qualitative_characteristics():
-    tmp = data['Sex'].value_counts().values
-    return [tmp, tmp / tmp.sum() * 100]
+    v1 = data['Sex'].value_counts().values
+    percentages = [round(i / v1.sum() * 100, 3) for i in v1]
+    return [v1, percentages]
 
 
 def quantitative_characteristics():
     result = []
-    for i, col in enumerate(df.columns):
-        result.append(df.iloc[:, i].describe().drop('count').T)
+    for i in range(1, len(data.columns)):
+        result.append(data.iloc[:, i].describe().drop('count').T)
     return result
 
 
@@ -31,34 +34,35 @@ def point_3():
     qualitative = qualitative_characteristics()
     categories = ['Male', 'Infant', 'Female']
     plt.bar(categories, qualitative[0], edgecolor='black')
-    plt.xlabel('Count')
-    plt.ylabel('Categories')
+    plt.ylabel('Count')
+    plt.xlabel('Categories')
     plt.title('Counts of occurrences')
     plt.show()
 
 
 def point_4():
     fig, axs = plt.subplots(4, 2, figsize=(15, 15))
-    fig.suptitle('Histograms')
     j = 0
-    for i in range(len(df.columns)):
-        axs[j, i % 2].hist(df.iloc[:, i], bins=10, edgecolor='black', log=True)
-        axs[j, i % 2].set_xlabel(colnames[i + 1])
-        arr = adjust_for_histrogram(df.iloc[:, i], 10)
-        axs[j, i % 2].set_xticks([round(arr[0] + arr[2] * i, 3) for i in range(11)])
-        j += i % 2
+    for i in range(1, len(data.columns)):
+        axs[j, (i - 1) % 2].hist(data.iloc[:, i], bins=10, edgecolor='black', log=True)
+        axs[j, (i - 1) % 2].set_xlabel(unit_colnames[i])
+        arr = adjust_for_histrogram(data.iloc[:, i], 10)
+        axs[j, (i - 1) % 2].set_xticks([round(arr[0] + arr[2] * i, 3) for i in range(11)])
+        if i % 2 != 0:
+            axs[j, (i - 1) % 2].set_ylabel('Count')
+        j += (i - 1) % 2
     plt.show()
 
 
 def point_5():
-    fig, axs = plt.subplots(14, 2, figsize=(20, 70))
-    fig.suptitle('Scatter plots')
+    fig, axs = plt.subplots(14, 2, figsize=(20, 65))
+    plt.subplots_adjust(top=0.97, bottom=0.05, hspace=0.5, wspace=0.2)
     k, x = 0, 0
-    for i in range(8):
-        for j in range(i + 1, 8):
-            axs[x, k % 2].scatter(df.iloc[:, i], df.iloc[:, j])
-            axs[x, k % 2].set_xlabel(colnames[i + 1])
-            axs[x, k % 2].set_ylabel(colnames[j + 1])
+    for i in range(1, len(data.columns)):
+        for j in range(i + 1, len(data.columns)):
+            axs[x, k % 2].scatter(data.iloc[:, i], data.iloc[:, j])
+            axs[x, k % 2].set_xlabel(unit_colnames[i])
+            axs[x, k % 2].set_ylabel(unit_colnames[j])
             k += 1
             if k % 2 == 0:
                 x += 1
@@ -66,35 +70,41 @@ def point_5():
 
 
 def point_6():
-    print(df.corr())
+    print(data.iloc[:, 1:].corr())
 
 
 def point_7():
-    sns.heatmap(df.corr(), annot=True)
+    sns.heatmap(data.iloc[:, 1:].corr(), annot=True)
     plt.show()
 
 
 def point_8():
-    sns.regplot(x=df['Length [mm]'], y=df['Diameter [mm]'])
+    sns.regplot(x=data['Length'], y=data['Diameter'], line_kws={"color": "red"})
     plt.show()
 
 
 def point_9():
     tmp = ['F', 'I', 'M']
+    col1 = ['Female', 'Infant', 'Male']
     final = []
-    for col in data.columns[1:]:
-        for el in tmp:
-            stats = data[data['Sex'] == el][col].describe().drop('count').values
-            stats = [round(l, 3) for l in stats]
-            stats.insert(0, el)
-            stats.insert(0, col)
+    for i, column in enumerate(data.columns[1:]):
+        col0 = [no_unit_colnames[i + 1], '', '']
+        for o, el in enumerate(tmp):
+            stats = data[data['Sex'] == el][column].describe().drop('count').values
+            stats = [round(i, 3) for i in stats]
+            stats.insert(0, col1[o])
+            stats.insert(0, col0[o])
             final.append(stats)
     return final
 
 
+def point_10():
+    fig, axs = plt.subplots(4, 2, figsize=(15, 15))
+    for el in data.columns:
+        print(el)
+
+
 def main():
-    data.columns = colnames
-    df.columns = colnames[1:]
 
     qualitative = qualitative_characteristics()
     for el in qualitative:
@@ -130,9 +140,13 @@ def main():
     point_8()
 
     # 9. Table with summary statistics for the quantitative variables in the dataset split by the categories of the
-    # qualitative variable"""
+    # qualitative variable
 
     point_9()
+
+    # 10. Boxplot of each quantitative variable in the dataset, grouping every one of them by the qualitative variable.
+
+    point_10()
 
 
 main()
