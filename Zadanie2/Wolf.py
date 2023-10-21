@@ -36,7 +36,7 @@ class Wolf:
         }
         if self.__x < prey.get_x():
             self.run(switcher.get(1))
-        elif self.__x > prey.get_x():
+        if self.__x > prey.get_x():
             self.run(switcher.get(3))
         elif self.__y < prey.get_y():
             self.run(switcher.get(0))
@@ -47,7 +47,7 @@ class Wolf:
         return ((self.__x - sheep.get_x()) ** 2 + (self.__y - sheep.get_y()) ** 2) ** 0.5
 
     def pick_sheep(self, herd_of_sheeps):
-        distances = [self.calculate_distance(sheep) for sheep in herd_of_sheeps]
+        distances = [self.calculate_distance(sheep) for sheep in herd_of_sheeps if sheep.is_alive]
         return distances.index(min(distances))
 
     def __str__(self):
