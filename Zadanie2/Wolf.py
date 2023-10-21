@@ -1,13 +1,9 @@
 class Wolf:
-    __x: float = 0
-    __y: float = 0
-    __direction: str = ""
-    __speed: float = 1
-
     def __init__(self):
         self.__x = 0
         self.__y = 0
         self.__direction = ""
+        self.__speed = 1
 
     def get_direction(self):
         return self.__direction
@@ -51,12 +47,10 @@ class Wolf:
         return ((self.__x - sheep.get_x()) ** 2 + (self.__y - sheep.get_y()) ** 2) ** 0.5
 
     def pick_sheep(self, herd_of_sheeps):
-        distances = [0.0 for _ in range(len(herd_of_sheeps))]
-        for i, sheep in enumerate(herd_of_sheeps):
-            distances[i] = self.calculate_distance(sheep)
+        distances = [self.calculate_distance(sheep) for sheep in herd_of_sheeps]
         return distances.index(min(distances))
 
-    def toString(self):
+    def __str__(self):
         return ("Wolf: x=" + str(self.__x) + " y=" + str(self.__y) +
                 " direction=" + self.__direction +
                 " speed=" + str(self.__speed))

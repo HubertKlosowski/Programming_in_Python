@@ -2,15 +2,12 @@ import random
 
 
 class Sheep:
-    __x: float = random.uniform(-10, 10)
-    __y: float = random.uniform(-10, 10)
-    __direction: str = ""
-    __speed: float = 0.5
-    is_alive: bool = True
-    __number_of_sheep: int = 0
-
     def __init__(self, direction, num):
+        self.__x = random.uniform(-10, 10)
+        self.__y = random.uniform(-10, 10)
         self.__direction = direction
+        self.__speed = 0.5
+        self.is_alive = True
         self.__number_of_sheep = num
 
     def get_direction(self):
@@ -33,7 +30,7 @@ class Sheep:
             self.__x -= self.__speed
         self.__direction = new_direction
 
-    def toString(self):
+    def __str__(self):
         return ("Sheep nr " + str(self.__number_of_sheep) +
                 ": x=" + str(self.__x) + " y=" + str(self.__y) +
                 " direction=" + self.__direction +
