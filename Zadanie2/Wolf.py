@@ -1,3 +1,11 @@
+def calculate_manhattan_distance(sheep, x, y):
+    return abs(x - sheep.get_x()) + abs(y - sheep.get_y())
+
+
+def calculate_euclidean_distance(sheep, x, y):
+    return ((x - sheep.get_x()) ** 2 + (y - sheep.get_y()) ** 2) ** 0.5
+
+
 class Wolf:
     def __init__(self):
         self.__x = 0
@@ -25,33 +33,28 @@ class Wolf:
             self.__x -= self.__speed
         self.__direction = new_direction
 
+    def choose_direction(self, sheep):
+        arr = [calculate_manhattan_distance(sheep, self.__x, self.__y + 1),
+               calculate_manhattan_distance(sheep, self.__x + 1, self.__y),
+               calculate_manhattan_distance(sheep, self.__x, self.__y - 1),
+               calculate_manhattan_distance(sheep, self.__x - 1, self.__y)]
+        return arr.index(min(arr))
+
     def chase_sheep(self, prey):
-        if abs(self.__x - prey.get_x()) < 1 and abs(self.__y - prey.get_y()) < 1:
-            prey.is_alive = False
         switcher = {
             0: "up",
             1: "right",
             2: "down",
             3: "left"
         }
-        if self.__x < prey.get_x():
-            self.run(switcher.get(1))
-        if self.__x > prey.get_x():
-            self.run(switcher.get(3))
-        elif self.__y < prey.get_y():
-            self.run(switcher.get(0))
-        elif self.__y > prey.get_y():
-            self.run(switcher.get(2))
-
-    def calculate_distance(self, sheep):
-        return ((self.__x - sheep.get_x()) ** 2 + (self.__y - sheep.get_y()) ** 2) ** 0.5
+        self.run(switcher.get(self.choose_direction(prey)))
 
     def pick_sheep(self, herd_of_sheeps):
-        distances = [self.calculate_distance(sheep) for sheep in herd_of_sheeps if sheep.is_alive]
+        distances = [calculate_manhattan_distance(sheep, self.__x, self.__y)
+                     for sheep in herd_of_sheeps if sheep.is_alive]
         return distances.index(min(distances))
 
     def __str__(self):
         return ("Wolf: x=" + str(self.__x) + " y=" + str(self.__y) +
                 " direction=" + self.__direction +
                 " speed=" + str(self.__speed))
-
