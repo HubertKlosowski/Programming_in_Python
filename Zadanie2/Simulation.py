@@ -68,8 +68,6 @@ def simulation(switch: dict, alive: int, a_sh: list, wolf: Wolf, prey: int, i: i
         a_sh.remove(a_sh[prey])
         prey = -1
         alive -= 1
-        if alive == 0:
-            return alive, prey
     return alive, prey
 
 
@@ -91,7 +89,7 @@ def main():
     rounds, dead_sheeps = [], []
     wolf = Wolf()
     num_alive, prey_index, choose = len(herd_of_sheeps), -1, 1
-    if choose == 2:
+    if choose == 1:
         for i in range(num_of_rounds):
             num_alive, prey_index = (
                 simulation(switch, num_alive, herd_of_sheeps, wolf, prey_index, i, dead_sheeps, rounds))
