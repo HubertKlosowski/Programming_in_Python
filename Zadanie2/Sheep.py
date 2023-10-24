@@ -3,12 +3,15 @@ import random
 
 class Sheep:
     def __init__(self, direction, num):
-        self.__x = random.uniform(-10, 10)
-        self.__y = random.uniform(-10, 10)
-        self.__direction = direction
-        self.__speed = 0.5
-        self.is_alive = True
-        self.__number_of_sheep = num
+        self.__x: float = random.uniform(-10, 10)
+        self.__y: float = random.uniform(-10, 10)
+        self.__direction: str = direction
+        self.__speed: float = 0.5
+        self.is_alive: bool = True
+        self.__number_of_sheep: int = num
+
+    def get_number_of_sheep(self):
+        return self.__number_of_sheep
 
     def get_direction(self):
         return self.__direction

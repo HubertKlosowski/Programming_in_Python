@@ -8,10 +8,10 @@ def calculate_euclidean_distance(sheep, x, y):
 
 class Wolf:
     def __init__(self):
-        self.__x = 0
-        self.__y = 0
-        self.__direction = ""
-        self.__speed = 1
+        self.__x: float = 0.0
+        self.__y: float = 0.0
+        self.__direction: str = ""
+        self.__speed: int = 1
 
     def get_direction(self):
         return self.__direction
