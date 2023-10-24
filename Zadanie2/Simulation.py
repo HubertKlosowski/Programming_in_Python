@@ -3,6 +3,7 @@ import random
 import json
 from Wolf import Wolf, calculate_manhattan_distance
 import os
+import csv
 
 
 def info(herd_of_sheeps: list, wolf: Wolf, num_of_rounds: int, num_alive: int, prey_index: int):
@@ -22,7 +23,7 @@ def concat_sheeps(alive: list, dead: list) -> list:
     return res
 
 
-def round_to_json(all_sh: list, wolf: Wolf, num_of_rounds: int) -> dict:
+def save_to_json(all_sh: list, wolf: Wolf, num_of_rounds: int):
     round_data = {
         "round_no": num_of_rounds,
         "wolf_pos": {
@@ -31,14 +32,25 @@ def round_to_json(all_sh: list, wolf: Wolf, num_of_rounds: int) -> dict:
         },
         "sheep_pos": [(round(s.get_x(), 3), round(s.get_y(), 3)) if s.is_alive else None for s in all_sh]
     }
-    return round_data
+    try:
+        with open("pos.json", "r") as json_file:
+            sim_data = json.load(json_file)
+    except FileNotFoundError:
+        sim_data = []
+    sim_data.append(round_data)
+    with open("pos.json", "w") as json_file:
+        json.dump(sim_data, json_file, indent=2)
 
 
-def save_to_json(rounds_data: list):
-    if os.path.exists("pos.json"):
-        print("xd")
-    with open("pos.json", "a") as save_simulations:
-        json.dump(rounds_data, save_simulations)
+def save_to_csv(round_num: int, alive: int):
+    with open("alive.csv", "a", newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=["round", "alive"])
+        if csv_file.tell() == 0:
+            writer.writeheader()
+        writer.writerow({
+            "round": round_num,
+            "alive": alive
+        })
 
 
 def simulation(switch: dict, alive: int, a_sh: list, wolf: Wolf, prey: int, i: int, d_sh: list, rounds: list) -> tuple:
@@ -56,12 +68,19 @@ def simulation(switch: dict, alive: int, a_sh: list, wolf: Wolf, prey: int, i: i
         a_sh.remove(a_sh[prey])
         prey = -1
         alive -= 1
-    rounds.append(round_to_json(concat_sheeps(a_sh, d_sh), wolf, i))
+        if alive == 0:
+            return alive, prey
     return alive, prey
 
 
 def main():
-    num_of_rounds: int = 10
+    if os.path.exists("pos.json"):
+        with open("pos.json", "w") as file:
+            json.dump([], file)
+    if os.path.exists("alive.csv"):
+        with open("alive.csv", "w") as file:
+            file.truncate()
+    num_of_rounds: int = 200
     switch = {
         0: "up",
         1: "right",
@@ -72,17 +91,20 @@ def main():
     rounds, dead_sheeps = [], []
     wolf = Wolf()
     num_alive, prey_index, choose = len(herd_of_sheeps), -1, 1
-    if choose == 1:
+    if choose == 2:
         for i in range(num_of_rounds):
             num_alive, prey_index = (
                 simulation(switch, num_alive, herd_of_sheeps, wolf, prey_index, i, dead_sheeps, rounds))
+            save_to_json(concat_sheeps(herd_of_sheeps, dead_sheeps), wolf, i)
+            save_to_csv(i, num_alive)
     else:
         num_of_rounds: int = 0
         while num_alive != 0:
             num_alive, prey_index = (
                 simulation(switch, num_alive, herd_of_sheeps, wolf, prey_index, num_of_rounds, dead_sheeps, rounds))
+            save_to_json(concat_sheeps(herd_of_sheeps, dead_sheeps), wolf, num_of_rounds)
+            save_to_csv(num_of_rounds, num_alive)
             num_of_rounds += 1
-    save_to_json(rounds)
 
 
 main()
