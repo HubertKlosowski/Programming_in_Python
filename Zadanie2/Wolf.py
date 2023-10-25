@@ -34,10 +34,10 @@ class Wolf:
         self.__direction = new_direction
 
     def choose_direction(self, sheep):
-        arr = [calculate_manhattan_distance(sheep, self.__x, self.__y + 1),
-               calculate_manhattan_distance(sheep, self.__x + 1, self.__y),
-               calculate_manhattan_distance(sheep, self.__x, self.__y - 1),
-               calculate_manhattan_distance(sheep, self.__x - 1, self.__y)]
+        arr = [calculate_euclidean_distance(sheep, self.__x, self.__y + 1),
+               calculate_euclidean_distance(sheep, self.__x + 1, self.__y),
+               calculate_euclidean_distance(sheep, self.__x, self.__y - 1),
+               calculate_euclidean_distance(sheep, self.__x - 1, self.__y)]
         return arr.index(min(arr))
 
     def chase_sheep(self, prey):
@@ -50,7 +50,7 @@ class Wolf:
         self.run(switcher.get(self.choose_direction(prey)))
 
     def pick_sheep(self, herd_of_sheeps):
-        distances = [calculate_manhattan_distance(sheep, self.__x, self.__y)
+        distances = [calculate_euclidean_distance(sheep, self.__x, self.__y)
                      for sheep in herd_of_sheeps if sheep.is_alive]
         return distances.index(min(distances))
 

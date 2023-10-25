@@ -1,7 +1,7 @@
 from Sheep import Sheep
 import random
 import json
-from Wolf import Wolf, calculate_manhattan_distance
+from Wolf import Wolf, calculate_euclidean_distance
 import os
 import csv
 
@@ -48,7 +48,7 @@ def save_to_csv(round_num: int, alive: int):
         writer.writerow([round_num, alive])
 
 
-def simulation(switch: dict, alive: int, a_sh: list, wolf: Wolf, prey: int, i: int, d_sh: list, rounds: list) -> tuple:
+def simulation(switch: dict, alive: int, a_sh: list, wolf: Wolf, prey: int, i: int, d_sh: list) -> tuple:
     directions: list = [switch.get(random.randint(0, 3)) for _ in range(alive)]
     for j, sheep in enumerate(a_sh):
         if sheep.is_alive:
@@ -57,7 +57,7 @@ def simulation(switch: dict, alive: int, a_sh: list, wolf: Wolf, prey: int, i: i
         prey = wolf.pick_sheep(a_sh)
     info(a_sh, wolf, i, alive, prey)
     wolf.chase_sheep(a_sh[prey])
-    if calculate_manhattan_distance(a_sh[prey], wolf.get_x(), wolf.get_y()) <= 1:
+    if calculate_euclidean_distance(a_sh[prey], wolf.get_x(), wolf.get_y()) <= 1:
         a_sh[prey].is_alive = False
         d_sh.append(a_sh[prey])
         a_sh.remove(a_sh[prey])
