@@ -44,13 +44,8 @@ def save_to_json(all_sh: list, wolf: Wolf, num_of_rounds: int):
 
 def save_to_csv(round_num: int, alive: int):
     with open("alive.csv", "a", newline='') as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=["round", "alive"])
-        if csv_file.tell() == 0:
-            writer.writeheader()
-        writer.writerow({
-            "round": round_num,
-            "alive": alive
-        })
+        writer = csv.writer(csv_file)
+        writer.writerow([round_num, alive])
 
 
 def simulation(switch: dict, alive: int, a_sh: list, wolf: Wolf, prey: int, i: int, d_sh: list, rounds: list) -> tuple:
