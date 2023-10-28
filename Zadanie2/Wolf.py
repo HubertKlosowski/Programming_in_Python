@@ -12,6 +12,7 @@ class Wolf:
         self.__y: float = 0.0
         self.__direction: str = ""
         self.__speed: int = spawn
+        self.smallest_dist: float = 0.0
 
     def get_direction(self):
         return self.__direction
@@ -52,6 +53,7 @@ class Wolf:
     def pick_sheep(self, sheeps):
         distances = [calculate_euclidean_distance(sheep, self.__x, self.__y)
                      for sheep in sheeps if sheep.is_alive]
+        self.smallest_dist = min(distances)
         return distances.index(min(distances))
 
     def __str__(self):
