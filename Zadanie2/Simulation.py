@@ -5,6 +5,7 @@ from Wolf import Wolf, calculate_euclidean_distance
 import os
 import csv
 import argparse
+import configparser
 
 
 def info(sheep: Sheep, wolf: Wolf, round_num: int, alive: int):
@@ -56,9 +57,9 @@ def simulation(alive: int, sheeps: list, wolf: Wolf, prey: int, i: int) -> tuple
     wolf.chase_sheep(alive_sheeps[prey])
     if calculate_euclidean_distance(alive_sheeps[prey], wolf.get_x(), wolf.get_y()) <= 1:
         alive_sheeps[prey].is_alive = False
+        alive -= 1
         info(alive_sheeps[prey], wolf, i, alive)
         prey = -1
-        alive -= 1
     else:
         info(alive_sheeps[prey], wolf, i, alive)
     return alive, prey
