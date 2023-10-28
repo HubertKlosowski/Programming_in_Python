@@ -2,11 +2,11 @@ import random
 
 
 class Sheep:
-    def __init__(self, direction, num):
-        self.__x: float = random.uniform(-10, 10)
-        self.__y: float = random.uniform(-10, 10)
+    def __init__(self, direction, num, spawn, speed):
+        self.__x: float = random.uniform(-spawn, spawn)
+        self.__y: float = random.uniform(-spawn, spawn)
         self.__direction: str = direction
-        self.__speed: float = 0.5
+        self.__speed: float = speed
         self.is_alive: bool = True
         self.__sheep_id: int = num
 
