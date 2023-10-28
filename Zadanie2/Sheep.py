@@ -25,11 +25,11 @@ class Sheep:
     def run(self, new_direction):
         if new_direction == "up":
             self.__y += self.__speed
-        elif new_direction == "right":
+        if new_direction == "right":
             self.__x += self.__speed
-        elif new_direction == "down":
+        if new_direction == "down":
             self.__y -= self.__speed
-        elif new_direction == "left":
+        if new_direction == "left":
             self.__x -= self.__speed
         self.__direction = new_direction
 
