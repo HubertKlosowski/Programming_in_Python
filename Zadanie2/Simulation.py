@@ -6,8 +6,6 @@ import os
 import csv
 import argparse
 
-prey_index = -1
-
 
 def info(sheep: Sheep, wolf: Wolf, round_num: int, alive: int):
     print("-" * 20)
@@ -58,18 +56,19 @@ def simulation(alive: int, sheeps: list, wolf: Wolf, prey: int, i: int) -> tuple
     wolf.chase_sheep(alive_sheeps[prey])
     if calculate_euclidean_distance(alive_sheeps[prey], wolf.get_x(), wolf.get_y()) <= 1:
         alive_sheeps[prey].is_alive = False
-        alive -= 1
-    info(alive_sheeps[prey], wolf, i, alive)
-    if calculate_euclidean_distance(alive_sheeps[prey], wolf.get_x(), wolf.get_y()) <= 1:
+        info(alive_sheeps[prey], wolf, i, alive)
         prey = -1
+        alive -= 1
+    else:
+        info(alive_sheeps[prey], wolf, i, alive)
     return alive, prey
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", "--rounds", type=int, default=150, help="Number of rounds")
-    parser.add_argument("-s", "--sheep", type=int, default=10, help="Number of sheeps")
-    parser.add_argument("-c", "--config", type=str, default="config.json", help="Config file")
+    parser.add_argument("-r", "--rounds", type=int, default=50, help="Number of rounds")
+    parser.add_argument("-s", "--sheep", type=int, default=15, help="Number of sheeps")
+    parser.add_argument("-w", "--wait", action="store_true", help="Press key to pause simulation")
     args = parser.parse_args()
     if os.path.exists("pos.json"):
         with open("pos.json", "w") as file:
@@ -91,6 +90,8 @@ def main():
         alive, prey = simulation(alive, sheeps, wolf, prey, i)
         save_to_json(sheeps, wolf, i)
         save_to_csv(i, alive)
+        if args.wait:
+            input("Press any key to continue...")
 
 
 main()
