@@ -4,22 +4,25 @@ import json
 from Wolf import Wolf, calculate_euclidean_distance
 import os
 import csv
+import argparse
+
+prey_index = -1
 
 
-def info(herd_of_sheeps: list, wolf: Wolf, num_of_rounds: int, num_alive: int, prey_index: int):
-    print("------------------------------------")
-    print("Round: ", num_of_rounds)
-    print("Wolf: ", round(wolf.get_x(), 3), round(wolf.get_y(), 3))
-    print("Alive sheeps: ", num_alive)
-    if herd_of_sheeps[prey_index].is_alive:
-        print("Sheep nr ", prey_index, " is being chased")
+def info(sheep: Sheep, wolf: Wolf, round_num: int, alive: int):
+    print("-" * 20)
+    print("Round: ", round_num)
+    print("Wolf: ", format(wolf.get_x(), '.3f'), format(wolf.get_y(), '.3f'))
+    print("Alive sheeps: ", alive)
+    if sheep.is_alive:
+        print("Sheep nr", sheep.get_sheep_id(), "is being chased")
     else:
-        print("Sheep nr ", prey_index, " is eaten")
+        print("Sheep nr", sheep.get_sheep_id(), "is eaten")
 
 
-def save_to_json(sheeps: list, wolf: Wolf, num_of_rounds: int):
+def save_to_json(sheeps: list, wolf: Wolf, round_num: int):
     round_data = {
-        "round_no": num_of_rounds,
+        "round_no": round_num,
         "wolf_pos": {
             "x": round(wolf.get_x(), 3),
             "y": round(wolf.get_y(), 3)
@@ -44,60 +47,50 @@ def save_to_csv(round_num: int, alive: int):
     csv_file.close()
 
 
-def simulation(switch: dict, alive: int, sheeps: list, wolf: Wolf, prey: int, i: int) -> tuple:
-    directions: list = [switch.get(random.randint(0, 3)) for _ in range(len(sheeps))]
-    for j, sheep in enumerate(sheeps):
-        if sheep.is_alive:
-            sheep.run(directions[j])
+def simulation(alive: int, sheeps: list, wolf: Wolf, prey: int, i: int) -> tuple:
+    alive_sheeps = [sheep for sheep in sheeps if sheep.is_alive]
     if prey == -1:
         try:
-            prey = wolf.pick_sheep(sheeps)
+            prey = wolf.pick_sheep(alive_sheeps)
         except ValueError:
-            raise ValueError("Error! All sheeps are dead.")
-    info(sheeps, wolf, i, alive, prey)
-    wolf.chase_sheep(sheeps[prey])
-    if calculate_euclidean_distance(sheeps[prey], wolf.get_x(), wolf.get_y()) <= 1:
-        sheeps[prey].is_alive = False
-        prey = -1
+            print("Error! All sheeps are dead!")
+            exit(0)
+    wolf.chase_sheep(alive_sheeps[prey])
+    if calculate_euclidean_distance(alive_sheeps[prey], wolf.get_x(), wolf.get_y()) <= 1:
+        alive_sheeps[prey].is_alive = False
         alive -= 1
+    info(alive_sheeps[prey], wolf, i, alive)
+    if calculate_euclidean_distance(alive_sheeps[prey], wolf.get_x(), wolf.get_y()) <= 1:
+        prey = -1
     return alive, prey
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-r", "--rounds", type=int, default=150, help="Number of rounds")
+    parser.add_argument("-s", "--sheep", type=int, default=10, help="Number of sheeps")
+    parser.add_argument("-c", "--config", type=str, default="config.json", help="Config file")
+    args = parser.parse_args()
     if os.path.exists("pos.json"):
         with open("pos.json", "w") as file:
             json.dump([], file)
     if os.path.exists("alive.csv"):
         with open("alive.csv", "w") as file:
             file.truncate()
-    num_of_rounds: int = 50
-    switch = {
+    num_of_rounds: int = args.rounds
+    moves = {
         0: "up",
         1: "right",
         2: "down",
         3: "left"
     }
-    herd_of_sheeps: list = [Sheep(switch.get(random.randint(0, 3)), i) for i in range(15)]
+    sheeps: list = [Sheep(moves.get(random.randint(0, 3)), i) for i in range(args.sheep)]
     wolf = Wolf()
-    num_alive, prey_index, choose = len(herd_of_sheeps), -1, 1
-    if choose == 1:
-        for i in range(num_of_rounds):
-            try:
-                num_alive, prey_index = (
-                    simulation(switch, num_alive, herd_of_sheeps, wolf, prey_index, i))
-                save_to_json(herd_of_sheeps, wolf, i)
-                save_to_csv(i, num_alive)
-            except ValueError as err:
-                print(err)
-                break
-    else:
-        num_of_rounds: int = 0
-        while num_alive != 0:
-            num_alive, prey_index = (
-                simulation(switch, num_alive, herd_of_sheeps, wolf, prey_index, num_of_rounds))
-            save_to_json(herd_of_sheeps, wolf, num_of_rounds)
-            save_to_csv(num_of_rounds, num_alive)
-            num_of_rounds += 1
+    alive, prey = len(sheeps), -1
+    for i in range(num_of_rounds):
+        alive, prey = simulation(alive, sheeps, wolf, prey, i)
+        save_to_json(sheeps, wolf, i)
+        save_to_csv(i, alive)
 
 
 main()

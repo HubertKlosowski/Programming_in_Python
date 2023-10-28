@@ -41,17 +41,17 @@ class Wolf:
         return arr.index(min(arr))
 
     def chase_sheep(self, prey):
-        switcher = {
+        moves = {
             0: "up",
             1: "right",
             2: "down",
             3: "left"
         }
-        self.run(switcher.get(self.choose_direction(prey)))
+        self.run(moves.get(self.choose_direction(prey)))
 
-    def pick_sheep(self, herd_of_sheeps):
+    def pick_sheep(self, sheeps):
         distances = [calculate_euclidean_distance(sheep, self.__x, self.__y)
-                     for sheep in herd_of_sheeps if sheep.is_alive]
+                     for sheep in sheeps if sheep.is_alive]
         return distances.index(min(distances))
 
     def __str__(self):

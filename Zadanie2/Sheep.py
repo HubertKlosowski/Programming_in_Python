@@ -8,10 +8,10 @@ class Sheep:
         self.__direction: str = direction
         self.__speed: float = 0.5
         self.is_alive: bool = True
-        self.__number_of_sheep: int = num
+        self.__sheep_id: int = num
 
-    def get_number_of_sheep(self):
-        return self.__number_of_sheep
+    def get_sheep_id(self):
+        return self.__sheep_id
 
     def get_direction(self):
         return self.__direction
@@ -34,7 +34,7 @@ class Sheep:
         self.__direction = new_direction
 
     def __str__(self):
-        return ("Sheep nr " + str(self.__number_of_sheep) +
+        return ("Sheep nr " + str(self.__sheep_id) +
                 ": x=" + str(self.__x) + " y=" + str(self.__y) +
                 " direction=" + self.__direction +
                 " speed=" + str(self.__speed) +
