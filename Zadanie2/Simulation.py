@@ -8,7 +8,6 @@ import argparse
 import configparser
 import logging
 
-how_end = 0
 
 def round_info(sheep: Sheep, wolf: Wolf, round_num: int, alive: int):
     print("-" * 20)
@@ -94,13 +93,15 @@ def check_ini_file(config: configparser.ConfigParser):
         raise configparser.NoOptionError("MoveDist", "Sheep")
     if not config.has_option("Wolf", "MoveDist"):
         raise configparser.NoOptionError("MoveDist", "Wolf")
-    Info = [float(config["Sheep"]["InitPosLimit"]), float(config["Sheep"]["MoveDist"]), float(config["Wolf"]["MoveDist"])]
-    Info = [abs(el) for el in Info]
-    if Info[0] < 0 or Info[1] < 0 or Info[2] < 0:
+    info = [float(config["Sheep"]["InitPosLimit"]),
+            float(config["Sheep"]["MoveDist"]),
+            float(config["Wolf"]["MoveDist"])]
+    info = [abs(el) for el in info]
+    if info[0] < 0 or info[1] < 0 or info[2] < 0:
         raise ValueError("Error! Values must be positive!")
-    if type(Info[0]) is not float or type(Info[1]) is not float or type(Info[2]) is not float:
+    if type(info[0]) is not float or type(info[1]) is not float or type(info[2]) is not float:
         raise TypeError("Error! Wrong type of values!")
-    return Info
+    return info
 
 
 def main():
@@ -129,15 +130,15 @@ def main():
         2: "down",
         3: "left"
     }
-    Info = check_ini_file(config)
+    info = check_ini_file(config)
     logging.basicConfig(filename="chase.log", level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s")
-    logging.debug("Config file values loaded." + str(Info))
+    logging.debug("Config file values loaded." + str(info))
     sheeps: list = []
     for i in range(args.sheep):
-        sheeps.append(Sheep(i, spawn=Info[0], speed=Info[1]))
+        sheeps.append(Sheep(i, spawn=info[0], speed=info[1]))
         logging.debug("Initial position of sheep nr " + str(i) + " determined.")
     logging.info("Initial position of sheeps determined.")
-    wolf = Wolf(Info[2])
+    wolf = Wolf(info[2])
     alive, prey = len(sheeps), -1
     for i in range(num_of_rounds):
         logging.info("New rounded started. Round nr " + str(i))
