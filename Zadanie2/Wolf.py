@@ -14,6 +14,12 @@ class Wolf:
         self.__speed: int = spawn
         self.smallest_dist: float = 0.0
 
+    def set_x(self, x):
+        self.__x = x
+
+    def set_y(self, y):
+        self.__y = y
+
     def get_direction(self):
         return self.__direction
 

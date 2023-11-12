@@ -69,6 +69,8 @@ def simulation(moves: dict, alive: int, sheeps: list, wolf: Wolf, prey: int, i: 
     logging.debug("Wolf moved.")
     logging.info("Wolf is chasing sheep nr " + str(prey) + ".")
     if calculate_euclidean_distance(alive_sheeps[prey], wolf.get_x(), wolf.get_y()) <= 1:
+        wolf.set_x(alive_sheeps[prey].get_x())
+        wolf.set_y(alive_sheeps[prey].get_y())
         logging.info("Wolf ate sheep nr " + str(prey) + ".")
         alive_sheeps[prey].is_alive = False
         alive -= 1
