@@ -98,10 +98,9 @@ def check_ini_file(config: configparser.ConfigParser):
     info = [float(config["Sheep"]["InitPosLimit"]),
             float(config["Sheep"]["MoveDist"]),
             float(config["Wolf"]["MoveDist"])]
-    info = [abs(el) for el in info]
-    if info[0] < 0 or info[1] < 0 or info[2] < 0:
+    if any(el < 0 for el in info) < 0:
         raise ValueError("Error! Values must be positive!")
-    if type(info[0]) is not float or type(info[1]) is not float or type(info[2]) is not float:
+    if not all(isinstance(el, float) for el in info):
         raise TypeError("Error! Wrong type of values!")
     return info
 
