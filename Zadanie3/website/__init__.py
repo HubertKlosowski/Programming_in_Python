@@ -10,10 +10,8 @@ def create_app():
 
     db.init_app(app)
 
-    from .views import views
+    from .table import table
 
-    app.register_blueprint(views, url_prefix='/')
-
-    from .models import Iris, Species
+    app.register_blueprint(table, url_prefix='/')
 
     return app

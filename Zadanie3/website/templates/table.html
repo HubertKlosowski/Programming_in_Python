@@ -7,21 +7,64 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
               rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
               crossorigin="anonymous">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     </head>
     <body>
         <div class="container">
-            <h1 class="text-center">Iris dataset</h1>
+            <div class="form-control">
+                <form action="/add" method="post">
+                    <div class="row">
+                        <div class="col-2">
+                        <label>
+                            <input type="text" class="form-control" name="sepal_length" placeholder="Sepal length">
+                        </label>
+                        </div>
+                        <div class="col-2">
+                            <label>
+                                <input type="text" class="form-control" name="sepal_width" placeholder="Sepal width">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <label>
+                                <input type="text" class="form-control" name="petal_length" placeholder="Petal length">
+                            </label>
+                        </div>
+                        <div class="col-2">
+                            <label>
+                                <input type="text" class="form-control" name="petal_width" placeholder="Petal width">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <label>
+                                <select class="form-select" name="species_id">
+                                    <option value="0">Setosa</option>
+                                    <option value="1">Versicolor</option>
+                                    <option value="2">Virginica</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="col-2">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <div class="row">
                 <div class="col-12">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>id</th>
-                                <th>sepal length (cm)</th>
-                                <th>sepal width (cm)</th>
-                                <th>petal length (cm)</th>
-                                <th>petal width (cm)</th>
-                                <th>species</th>
+                                <th>Id</th>
+                                <th>Sepal length (cm)</th>
+                                <th>Sepal width (cm)</th>
+                                <th>Petal length (cm)</th>
+                                <th>Petal width (cm)</th>
+                                <th>Species</th>
+                                <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,6 +76,11 @@
                                     <td>{{ el.petal_length }}</td>
                                     <td>{{ el.petal_width }}</td>
                                     <td>{{ name }}</td>
+                                    <td>
+                                        <form action="{{ url_for('table.delete', record_id=el.id) }}" method="post">
+                                            <button type="submit" class="btn btn-danger">X</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
