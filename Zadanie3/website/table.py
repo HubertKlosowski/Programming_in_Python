@@ -52,11 +52,11 @@ def add():
         db.session.add(new_iris)
         db.session.flush()
         db.session.commit()
-        return redirect(url_for('table.home'))
     except Exception as e:
         print(e)
         db.session.rollback()
         return render_template('400_error.html', error_message=str(e)), 400
+    return redirect(url_for('table.home'))
 
 
 @table.route('/delete/<int:record_id>', methods=['POST'])
