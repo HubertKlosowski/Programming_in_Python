@@ -1,5 +1,4 @@
 from flask import Blueprint, jsonify, request
-
 from .add_form import check_add
 from .models import Iris, Species
 from . import db
@@ -10,7 +9,10 @@ api = Blueprint('api', __name__)
 @api.route('/api/data', methods=['GET'])
 def get_iris_data():
     iris = db.session.query(Iris, Species.species_name).join(Species, Iris.species_id == Species.id).all()
-    return jsonify(iris)
+    iris_data = [{'id': el.id, 'sepal_length': el.sepal_length, 'sepal_width': el.sepal_width,
+                  'petal_length': el.petal_length, 'petal_width': el.petal_width,
+                  'species_id': el.species_id, 'species_name': name} for el, name in iris]
+    return jsonify(iris_data)
 
 
 @api.route('/api/data', methods=['POST'])
@@ -28,11 +30,11 @@ def add_iris():
         db.session.add(new_iris)
         db.session.flush()
         db.session.commit()
+        return jsonify({'message': 'Resource created successfully', 'id': new_iris.id}), 201
     except Exception as e:
         print(e)
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
-    return jsonify({'success': True}), 200
 
 
 @api.route('/api/data/<int:record_id>', methods=['DELETE'])
@@ -44,8 +46,8 @@ def delete_iris(record_id):
         db.session.delete(to_delete)
         db.session.flush()
         db.session.commit()
+        return jsonify({'message': 'Resource deleted successfully'}), 204
     except Exception as e:
         print(e)
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
-    return jsonify({'success': True}), 200
