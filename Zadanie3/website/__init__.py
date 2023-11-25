@@ -11,7 +11,9 @@ def create_app():
     db.init_app(app)
 
     from .table import table
+    from .add_form import add_form
 
     app.register_blueprint(table, url_prefix='/')
+    app.register_blueprint(add_form, url_prefix='/add_form')
 
     return app
