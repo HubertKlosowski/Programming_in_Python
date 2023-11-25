@@ -16,15 +16,25 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>sepal_length</th>
-                                <th>sepal_width</th>
-                                <th>petal_length</th>
-                                <th>petal_width</th>
+                                <th>id</th>
+                                <th>sepal length (cm)</th>
+                                <th>sepal width (cm)</th>
+                                <th>petal length (cm)</th>
+                                <th>petal width (cm)</th>
                                 <th>species</th>
                             </tr>
                         </thead>
                         <tbody>
-
+                            {% for el, name in iris %}
+                                <tr>
+                                    <td>{{ el.id }}</td>
+                                    <td>{{ el.sepal_length }}</td>
+                                    <td>{{ el.sepal_width }}</td>
+                                    <td>{{ el.petal_length }}</td>
+                                    <td>{{ el.petal_width }}</td>
+                                    <td>{{ name }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
