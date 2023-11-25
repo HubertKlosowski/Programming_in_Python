@@ -8,51 +8,64 @@
               rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
               crossorigin="anonymous">
         <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <style>
+            td, th {
+                vertical-align: middle !important;
+                text-align: center;
+            }
+            #add_form {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
     </head>
     <body>
         <div class="container">
-            <h1 class="blockquote">Add iris to database</h1>
+            <h1>Add iris to database</h1>
             <div class="container mt-5">
-                <form action="/add" method="post">
-                    <div class="row mb-3">
-                        <div class="col-3">
-                            <label>
-                                <input type="text" class="form-control" name="sepal_length" placeholder="Sepal Length">
-                            </label>
+                <div id="add_form">
+                    <form action="/add" method="post">
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <label>
+                                    <input type="text" class="form-control" name="sepal_length" placeholder="Sepal Length">
+                                </label>
+                            </div>
+                            <div class="col-3">
+                                <label>
+                                    <input type="text" class="form-control" name="sepal_width" placeholder="Sepal Width">
+                                </label>
+                            </div>
                         </div>
-                        <div class="col-3">
-                            <label>
-                                <input type="text" class="form-control" name="sepal_width" placeholder="Sepal Width">
-                            </label>
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <label>
+                                    <input type="text" class="form-control" name="petal_length" placeholder="Petal Length">
+                                </label>
+                            </div>
+                            <div class="col-3">
+                                <label>
+                                    <input type="text" class="form-control" name="petal_width" placeholder="Petal Width">
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-3">
-                            <label>
-                                <input type="text" class="form-control" name="petal_length" placeholder="Petal Length">
-                            </label>
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <label>
+                                    <select class="form-select" name="species_id">
+                                        <option value="0">Setosa</option>
+                                        <option value="1">Versicolor</option>
+                                        <option value="2">Virginica</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="col-3">
+                                <button type="submit" class="btn btn-primary btn-lg">Add</button>
+                            </div>
                         </div>
-                        <div class="col-3">
-                            <label>
-                                <input type="text" class="form-control" name="petal_width" placeholder="Petal Width">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-3">
-                            <label>
-                                <select class="form-select" name="species_id">
-                                    <option value="0">Setosa</option>
-                                    <option value="1">Versicolor</option>
-                                    <option value="2">Virginica</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <button type="submit" class="btn btn-primary btn-lg">Add</button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
                 <div class="row">
                     <div class="col-12">
                         <table class="table table-striped">
