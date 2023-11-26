@@ -12,8 +12,10 @@ def create_app():
 
     from .table import table
     from .add_form import add_form
+    from .api import api
 
     app.register_blueprint(table, url_prefix='/')
     app.register_blueprint(add_form, url_prefix='/add_form')
+    app.register_blueprint(api, url_prefix='/api')
 
     return app

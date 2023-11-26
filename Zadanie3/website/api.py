@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from .add_form import check_add
+from .add_form import check_add, create_iris
 from .models import Iris, Species
 from . import db
 
@@ -18,19 +18,14 @@ def get_iris_data():
 @api.route('/api/data', methods=['POST'])
 def add_iris():
     try:
-        if not check_add(request.form):
-            return jsonify({'error': 'Missing required fields'}), 400
-        new_iris = Iris(
-            sepal_length=float(request.form['sepal_length']),
-            sepal_width=float(request.form['sepal_width']),
-            petal_length=float(request.form['petal_length']),
-            petal_width=float(request.form['petal_width']),
-            species_id=int(request.form['species_id'])
-        )
-        db.session.add(new_iris)
+        check = check_add(request.form)
+        if not check[1]:
+            return jsonify({'error': check[0]}), 400
+        iris = create_iris(request.form)
+        db.session.add(iris)
         db.session.flush()
         db.session.commit()
-        return jsonify({'message': 'Resource created successfully', 'id': new_iris.id}), 201
+        return jsonify({'message': 'Resource created successfully', 'id': iris.id}), 201
     except Exception as e:
         print(e)
         db.session.rollback()
