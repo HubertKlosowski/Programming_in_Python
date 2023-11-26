@@ -18,7 +18,6 @@ def check_delete(form):
 def home():
     # iris = db.session.query(Iris, Species.species_name).join(Species, Iris.species_id == Species.id).all()
     iris = db.session.query(Iris).all()
-    print(len(iris))
     return render_template("table.html", iris=iris)
 
 

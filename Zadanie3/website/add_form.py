@@ -28,12 +28,12 @@ def create_iris(form):
     )
 
 
-@add_form.route('/', methods=['GET'])
+@add_form.route('/add_form', methods=['GET'])
 def home():
     return render_template("add_form.html")
 
 
-@add_form.route('/add', methods=['POST'])
+@add_form.route('/add_form/add', methods=['POST'])
 def add():
     try:
         check = check_add(request.form)

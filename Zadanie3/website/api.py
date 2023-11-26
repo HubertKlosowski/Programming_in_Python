@@ -8,10 +8,17 @@ api = Blueprint('api', __name__)
 
 @api.route('/api/data', methods=['GET'])
 def get_iris_data():
+    """
     iris = db.session.query(Iris, Species.species_name).join(Species, Iris.species_id == Species.id).all()
     iris_data = [{'id': el.id, 'sepal_length': el.sepal_length, 'sepal_width': el.sepal_width,
                   'petal_length': el.petal_length, 'petal_width': el.petal_width,
                   'species_id': el.species_id, 'species_name': name} for el, name in iris]
+    :return:
+    """
+    iris = db.session.query(Iris).all()
+    iris_data = [{'id': el.id, 'sepal_length': el.sepal_length, 'sepal_width': el.sepal_width,
+                  'petal_length': el.petal_length, 'petal_width': el.petal_width,
+                  'species_id': el.species_id} for el in iris]
     return jsonify(iris_data)
 
 
@@ -24,7 +31,7 @@ def add_iris():
         iris = create_iris(request.form)
         db.session.add(iris)
         db.session.commit()
-        return jsonify({'message': 'Resource created successfully', 'id': iris.id}), 201
+        return jsonify({'message': 'Resource created successfully'}), 201
     except Exception as e:
         print(e)
         db.session.rollback()
@@ -39,7 +46,7 @@ def delete_iris(record_id):
             return jsonify({'error': 'Record not found'}), 404
         db.session.delete(to_delete)
         db.session.commit()
-        return jsonify({'message': 'Resource deleted successfully'}), 204
+        return jsonify({'message': 'Resource deleted successfully'}), 200
     except Exception as e:
         print(e)
         db.session.rollback()
