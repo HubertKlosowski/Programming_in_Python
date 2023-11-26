@@ -34,14 +34,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for el, name in iris %}
+                                {% for el in iris %}
                                     <tr>
                                         <td>{{ el.id }}</td>
                                         <td>{{ el.sepal_length }}</td>
                                         <td>{{ el.sepal_width }}</td>
                                         <td>{{ el.petal_length }}</td>
                                         <td>{{ el.petal_width }}</td>
-                                        <td>{{ name }}</td>
+                                        <td>{{ el.species_id }}</td>
                                         <td>
                                             <form action="{{ url_for('table.delete', record_id=el.id) }}" method="post">
                                                 <button type="submit" class="btn btn-danger">X</button>

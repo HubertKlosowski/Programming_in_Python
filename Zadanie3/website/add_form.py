@@ -11,8 +11,8 @@ def check_add(form):
     for field in required_fields:
         if field not in form or form[field] == '':
             return 'Missing required fields', False
-        if field != 'species_id' and not form[field].isnumeric():
-            return 'All fields have to be numbers', False
+        if field != 'species_id' and float(form[field]) <= 0:
+            return 'All fields have to be greater than 0', False
         if field == 'species_id' and int(form[field]) not in [0, 1, 2]:
             return 'Species ID must be 1, 2, or 3', False
     return 'Valid data', True

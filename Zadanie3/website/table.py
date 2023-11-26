@@ -16,7 +16,8 @@ def check_delete(form):
 
 @table.route('/', methods=['GET'])
 def home():
-    iris = db.session.query(Iris, Species.species_name).join(Species, Iris.species_id == Species.id).all()
+    # iris = db.session.query(Iris, Species.species_name).join(Species, Iris.species_id == Species.id).all()
+    iris = db.session.query(Iris).all()
     print(len(iris))
     return render_template("table.html", iris=iris)
 
@@ -43,3 +44,22 @@ def delete(record_id):
         print(e)
         db.session.rollback()
         return render_template('404_error.html', error_message=str(e)), 404
+
+
+"""
+{% for el, name in iris %}
+                                    <tr>
+                                        <td>{{ el.id }}</td>
+                                        <td>{{ el.sepal_length }}</td>
+                                        <td>{{ el.sepal_width }}</td>
+                                        <td>{{ el.petal_length }}</td>
+                                        <td>{{ el.petal_width }}</td>
+                                        <td>{{ name }}</td>
+                                        <td>
+                                            <form action="{{ url_for('table.delete', record_id=el.id) }}" method="post">
+                                                <button type="submit" class="btn btn-danger">X</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+"""
