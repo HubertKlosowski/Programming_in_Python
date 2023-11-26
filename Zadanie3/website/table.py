@@ -17,6 +17,7 @@ def check_delete(form):
 @table.route('/', methods=['GET'])
 def home():
     iris = db.session.query(Iris, Species.species_name).join(Species, Iris.species_id == Species.id).all()
+    print(len(iris))
     return render_template("table.html", iris=iris)
 
 
@@ -36,7 +37,6 @@ def delete(record_id):
             return render_template('404_error.html', error_message='Record not found'), 404
         to_delete = Iris.query.get(record_id)
         db.session.delete(to_delete)
-        db.session.flush()
         db.session.commit()
         return redirect(url_for('table.home'))
     except Exception as e:

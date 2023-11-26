@@ -11,9 +11,9 @@ def check_add(form):
     for field in required_fields:
         if field not in form or form[field] == '':
             return 'Missing required fields', False
-        if field != 'species_id' and not form[field].replace('.', '', 1).isdigit():
+        if field != 'species_id' and not form[field].isnumeric():
             return 'All fields have to be numbers', False
-        if field == 'species_id' and int(form[field]) not in [1, 2, 3]:
+        if field == 'species_id' and int(form[field]) not in [0, 1, 2]:
             return 'Species ID must be 1, 2, or 3', False
     return 'Valid data', True
 
@@ -41,10 +41,9 @@ def add():
             return render_template('400_error.html', error_message=check[0]), 400
         new_iris = create_iris(request.form)
         db.session.add(new_iris)
-        db.session.flush()
         db.session.commit()
+        return redirect(url_for('table.home'))
     except Exception as e:
         print(e)
         db.session.rollback()
         return render_template('400_error.html', error_message=str(e)), 400
-    return redirect(url_for('add_form.home'))

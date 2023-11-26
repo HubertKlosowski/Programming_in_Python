@@ -23,7 +23,6 @@ def add_iris():
             return jsonify({'error': check[0]}), 400
         iris = create_iris(request.form)
         db.session.add(iris)
-        db.session.flush()
         db.session.commit()
         return jsonify({'message': 'Resource created successfully', 'id': iris.id}), 201
     except Exception as e:
@@ -39,7 +38,6 @@ def delete_iris(record_id):
         if to_delete is None:
             return jsonify({'error': 'Record not found'}), 404
         db.session.delete(to_delete)
-        db.session.flush()
         db.session.commit()
         return jsonify({'message': 'Resource deleted successfully'}), 204
     except Exception as e:
