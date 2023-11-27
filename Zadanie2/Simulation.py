@@ -59,7 +59,7 @@ def simulation(moves: dict, alive: int, sheeps: list, wolf: Wolf, prey: int, i: 
             prey = wolf.pick_sheep(alive_sheeps)
             logging.debug("Wolf picked sheep nr " + str(prey) + ".")
             logging.debug("Distance to sheep nr " + str(prey) + " is: " +
-                         str(wolf.smallest_dist) + ".")
+                          str(wolf.smallest_dist) + ".")
         except ValueError:
             logging.info("Simulation ended. All sheeps are dead.")
             print("All sheeps are dead!")
