@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 
-from .models import Iris, Species
 from . import db
+from .models import Iris, Species
 
 table = Blueprint('table', __name__)
 

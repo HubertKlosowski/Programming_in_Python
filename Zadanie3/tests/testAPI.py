@@ -1,4 +1,5 @@
 import unittest
+
 from website import create_app
 
 app = create_app()
@@ -47,6 +48,12 @@ class MyTestCase(unittest.TestCase):
                                                  'petal_width': 0, 'species_id': 0})
             self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json, {'error': 'All fields have to be greater than 0'})
+
+    def test_predict_iris(self):
+        with app.test_client() as c:
+            response = c.get('/api/predictions', query_string={'s_l': 1, 's_w': 1, 'p_l': 1, 'p_w': 1})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, {'prediction': 1})
 
 
 if __name__ == '__main__':

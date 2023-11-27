@@ -1,20 +1,16 @@
 from flask import Blueprint, jsonify, request
-from .add_form import check_add, create_iris
-from .models import Iris, Species
+
 from . import db
+from .add_form import check_add, create_iris
+from .models import Iris
+from .predict import check_predict
+from .trainingModel import train_model
 
 api = Blueprint('api', __name__)
 
 
 @api.route('/api/data', methods=['GET'])
 def get_iris_data():
-    """
-    iris = db.session.query(Iris, Species.species_name).join(Species, Iris.species_id == Species.id).all()
-    iris_data = [{'id': el.id, 'sepal_length': el.sepal_length, 'sepal_width': el.sepal_width,
-                  'petal_length': el.petal_length, 'petal_width': el.petal_width,
-                  'species_id': el.species_id, 'species_name': name} for el, name in iris]
-    :return:
-    """
     iris = db.session.query(Iris).all()
     iris_data = [{'id': el.id, 'sepal_length': el.sepal_length, 'sepal_width': el.sepal_width,
                   'petal_length': el.petal_length, 'petal_width': el.petal_width,
@@ -50,4 +46,24 @@ def delete_iris(record_id):
     except Exception as e:
         print(e)
         db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+
+@api.route('/api/predictions', methods=['GET'])
+def predict_iris():
+    try:
+        s_l = float(request.args.get('s_l'))
+        s_w = float(request.args.get('s_w'))
+        p_l = float(request.args.get('p_l'))
+        p_w = float(request.args.get('p_w'))
+        iris_data = [s_l, s_w, p_l, p_w]
+        check = check_predict(iris_data)
+        if not check[1]:
+            return jsonify({'error': check[0]}), 400
+        test_iris = db.session.query(Iris).all()
+        X = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in test_iris]
+        y = [i.species_id for i in test_iris]
+        return jsonify({'prediction': int(train_model(X, y, [iris_data]))}), 200
+    except Exception as e:
+        print(e)
         return jsonify({'error': str(e)}), 400

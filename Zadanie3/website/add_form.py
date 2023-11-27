@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request
 
-from .models import Iris
 from . import db
+from .models import Iris
 
 add_form = Blueprint('add_form', __name__)
 

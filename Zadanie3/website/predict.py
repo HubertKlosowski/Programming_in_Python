@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request
-from .trainingModel import train_model, scale_data
 
 from .models import Iris
+from .trainingModel import train_model
 
 predict = Blueprint('predict', __name__)
 
