@@ -11,8 +11,16 @@ predict = Blueprint('predict', __name__)
 @predict.route('/predict', methods=['GET'])
 def home():
     iris = Iris.query.all()
-    serialized_iris = [i.to_dict(only=('sepal_length', 'sepal_width', 'petal_length', 'petal_width'))
-                       for i in iris]
+    serialized_iris = [
+        {
+            'sepal_length': i.sepal_length,
+            'sepal_width': i.sepal_width,
+            'petal_length': i.petal_length,
+            'petal_width': i.petal_width,
+            'species_id': i.species_id
+        } for i in iris
+    ]
+    print(serialized_iris[0])
     return render_template("predict.html")
 
 
