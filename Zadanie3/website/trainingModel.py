@@ -12,4 +12,4 @@ def train_model(X_train, y_train, x_test):
     knn = KNeighborsClassifier(n_neighbors=3, weights='distance', metric='euclidean')
     knn.fit(X_train, y_train)
     prediction = knn.predict(x_test)
-    return prediction
+    return prediction[0]
