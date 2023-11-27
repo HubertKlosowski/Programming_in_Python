@@ -11,16 +11,9 @@ predict = Blueprint('predict', __name__)
 @predict.route('/predict', methods=['GET'])
 def home():
     iris = Iris.query.all()
-    serialized_iris = [
-        {
-            'sepal_length': i.sepal_length,
-            'sepal_width': i.sepal_width,
-            'petal_length': i.petal_length,
-            'petal_width': i.petal_width,
-            'species_id': i.species_id
-        } for i in iris
-    ]
-    print(serialized_iris[0])
+    X = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in iris]
+    y = [i.species_id for i in iris]
+    train_model(X, y, [[5.1, 3.5, 1.4, 0.2]])
     return render_template("predict.html")
 
 
