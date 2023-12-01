@@ -1,9 +1,9 @@
 def calculate_manhattan_distance(sheep, x, y):
-    return abs(x - sheep.get_x()) + abs(y - sheep.get_y())
+    return abs(x - sheep.x) + abs(y - sheep.y)
 
 
 def calculate_euclidean_distance(sheep, x, y):
-    return ((x - sheep.get_x()) ** 2 + (y - sheep.get_y()) ** 2) ** 0.5
+    return ((x - sheep.x) ** 2 + (y - sheep.y) ** 2) ** 0.5
 
 
 class Wolf:
@@ -14,20 +14,25 @@ class Wolf:
         self.__speed: int = spawn
         self.smallest_dist: float = 0.0
 
-    def set_x(self, x):
-        self.__x = x
-
-    def set_y(self, y):
-        self.__y = y
-
-    def get_direction(self):
-        return self.__direction
-
-    def get_x(self):
+    @property
+    def x(self):
         return self.__x
 
-    def get_y(self):
+    @x.setter
+    def x(self, value):
+        self.__x = value
+
+    @property
+    def y(self):
         return self.__y
+
+    @y.setter
+    def y(self, value):
+        self.__y = value
+
+    @property
+    def direction(self):
+        return self.__direction
 
     def run(self, new_direction):
         if new_direction == "up":
@@ -63,6 +68,4 @@ class Wolf:
         return distances.index(min(distances))
 
     def __str__(self):
-        return ("Wolf: x=" + str(self.__x) + " y=" + str(self.__y) +
-                " direction=" + self.__direction +
-                " speed=" + str(self.__speed))
+        return f"Wolf: x={self.__x} y={self.__y} direction={self.__direction} speed={self.__speed}"

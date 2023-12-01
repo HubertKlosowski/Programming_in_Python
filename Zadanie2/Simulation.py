@@ -12,22 +12,22 @@ import logging
 def round_info(sheep: Sheep, wolf: Wolf, round_num: int, alive: int):
     print("-" * 20)
     print("Round: ", round_num)
-    print("Wolf: ", format(wolf.get_x(), ".3f"), format(wolf.get_y(), ".3f"))
+    print("Wolf: ", format(wolf.x, ".3f"), format(wolf.y, ".3f"))
     print("Alive sheeps: ", alive)
     if sheep.is_alive:
-        print("Sheep nr", sheep.get_sheep_id(), "is being chased")
+        print("Sheep nr", sheep.sheep_id, "is being chased")
     else:
-        print("Sheep nr", sheep.get_sheep_id(), "is eaten")
+        print("Sheep nr", sheep.sheep_id, "is eaten")
 
 
 def save_to_json(sheeps: list, wolf: Wolf, round_num: int):
     round_data = {
         "round_no": round_num,
         "wolf_pos": {
-            "x": round(wolf.get_x(), 3),
-            "y": round(wolf.get_y(), 3)
+            "x": round(wolf.x, 3),
+            "y": round(wolf.y, 3)
         },
-        "sheep_pos": [(round(s.get_x(), 3), round(s.get_y(), 3)) if s.is_alive else None for s in sheeps]
+        "sheep_pos": [(round(s.x, 3), round(s.y, 3)) if s.is_alive else None for s in sheeps]
     }
     try:
         with open("pos.json", "r") as json_file:
@@ -51,8 +51,8 @@ def simulation(moves: dict, alive: int, sheeps: list, wolf: Wolf, prey: int, i: 
     alive_sheeps = [sheep for sheep in sheeps if sheep.is_alive]
     for sheep in alive_sheeps:
         sheep.run(moves.get(random.randint(0, 3)))
-        logging.debug("Sheep nr " + str(sheep.get_sheep_id()) + " direction is: " + sheep.get_direction() + ".")
-        logging.debug("Sheep nr " + str(sheep.get_sheep_id()) + " moved.")
+        logging.debug("Sheep nr " + str(sheep.sheep_id) + " direction is: " + sheep.direction + ".")
+        logging.debug("Sheep nr " + str(sheep.sheep_id) + " moved.")
     logging.info("All alive sheeps moved.")
     if prey == -1:
         try:
@@ -65,12 +65,12 @@ def simulation(moves: dict, alive: int, sheeps: list, wolf: Wolf, prey: int, i: 
             print("All sheeps are dead!")
             exit(0)
     wolf.chase_sheep(alive_sheeps[prey])
-    logging.debug("Wolf direction is: " + wolf.get_direction() + ".")
+    logging.debug("Wolf direction is: " + wolf.direction + ".")
     logging.debug("Wolf moved.")
     logging.info("Wolf is chasing sheep nr " + str(prey) + ".")
-    if calculate_euclidean_distance(alive_sheeps[prey], wolf.get_x(), wolf.get_y()) <= 1:
-        wolf.set_x(alive_sheeps[prey].get_x())
-        wolf.set_y(alive_sheeps[prey].get_y())
+    if calculate_euclidean_distance(alive_sheeps[prey], wolf.x, wolf.y) <= 1:
+        wolf.x = alive_sheeps[prey].x
+        wolf.y = alive_sheeps[prey].y
         logging.info("Wolf ate sheep nr " + str(prey) + ".")
         alive_sheeps[prey].is_alive = False
         alive -= 1

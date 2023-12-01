@@ -10,17 +10,21 @@ class Sheep:
         self.is_alive: bool = True
         self.__sheep_id: int = num
 
-    def get_sheep_id(self):
+    @property
+    def sheep_id(self):
         return self.__sheep_id
 
-    def get_direction(self):
-        return self.__direction
-
-    def get_x(self):
+    @property
+    def x(self):
         return self.__x
 
-    def get_y(self):
+    @property
+    def y(self):
         return self.__y
+
+    @property
+    def direction(self):
+        return self.__direction
 
     def run(self, new_direction):
         if new_direction == "up":
@@ -34,8 +38,4 @@ class Sheep:
         self.__direction = new_direction
 
     def __str__(self):
-        return ("Sheep nr " + str(self.__sheep_id) +
-                ": x=" + str(self.__x) + " y=" + str(self.__y) +
-                " direction=" + self.__direction +
-                " speed=" + str(self.__speed) +
-                " alive=" + str(self.is_alive))
+        return f"Sheep: x={self.__x} y={self.__y} direction={self.__direction} speed={self.__speed}"
