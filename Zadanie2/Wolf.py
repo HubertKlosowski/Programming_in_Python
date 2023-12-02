@@ -8,48 +8,28 @@ def calculate_euclidean_distance(sheep, x, y):
 
 class Wolf:
     def __init__(self, spawn):
-        self.__x: float = 0.0
-        self.__y: float = 0.0
-        self.__direction: str = ""
-        self.__speed: int = spawn
+        self.x: float = 0.0
+        self.y: float = 0.0
+        self.direction: str = ""
+        self.speed: int = spawn
         self.smallest_dist: float = 0.0
-
-    @property
-    def x(self):
-        return self.__x
-
-    @x.setter
-    def x(self, value):
-        self.__x = value
-
-    @property
-    def y(self):
-        return self.__y
-
-    @y.setter
-    def y(self, value):
-        self.__y = value
-
-    @property
-    def direction(self):
-        return self.__direction
 
     def run(self, new_direction):
         if new_direction == "up":
-            self.__y += self.__speed
+            self.y += self.speed
         elif new_direction == "right":
-            self.__x += self.__speed
+            self.x += self.speed
         elif new_direction == "down":
-            self.__y -= self.__speed
+            self.y -= self.speed
         elif new_direction == "left":
-            self.__x -= self.__speed
-        self.__direction = new_direction
+            self.x -= self.speed
+        self.direction = new_direction
 
     def choose_direction(self, sheep):
-        arr = [calculate_euclidean_distance(sheep, self.__x, self.__y + 1),
-               calculate_euclidean_distance(sheep, self.__x + 1, self.__y),
-               calculate_euclidean_distance(sheep, self.__x, self.__y - 1),
-               calculate_euclidean_distance(sheep, self.__x - 1, self.__y)]
+        arr = [calculate_euclidean_distance(sheep, self.x, self.y + 1),
+               calculate_euclidean_distance(sheep, self.x + 1, self.y),
+               calculate_euclidean_distance(sheep, self.x, self.y - 1),
+               calculate_euclidean_distance(sheep, self.x - 1, self.y)]
         return arr.index(min(arr))
 
     def chase_sheep(self, prey):
@@ -62,10 +42,10 @@ class Wolf:
         self.run(moves.get(self.choose_direction(prey)))
 
     def pick_sheep(self, sheeps):
-        distances = [calculate_euclidean_distance(sheep, self.__x, self.__y)
+        distances = [calculate_euclidean_distance(sheep, self.x, self.y)
                      for sheep in sheeps if sheep.is_alive]
         self.smallest_dist = min(distances)
         return distances.index(min(distances))
 
     def __str__(self):
-        return f"Wolf: x={self.__x} y={self.__y} direction={self.__direction} speed={self.__speed}"
+        return f"Wolf: x={self.x} y={self.y} direction={self.direction} speed={self.speed}"
