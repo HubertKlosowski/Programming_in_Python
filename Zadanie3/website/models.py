@@ -7,11 +7,4 @@ class Iris(db.Model):
     sepal_width = db.Column(db.Float, nullable=False)
     petal_length = db.Column(db.Float, nullable=False)
     petal_width = db.Column(db.Float, nullable=False)
-    species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
-
-
-class Species(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    species_name = db.Column(db.String(20), nullable=False)
-    irises = db.relationship('Iris')
-
+    species_id = db.Column(db.Integer, nullable=False)

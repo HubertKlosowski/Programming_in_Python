@@ -37,7 +37,7 @@
                             <tbody>
                                 {% for el in iris %}
                                     <tr>
-                                        <td>{{ el.id }}</td>
+                                        <td>{{ loop.index }}</td>
                                         <td>{{ el.sepal_length }}</td>
                                         <td>{{ el.sepal_width }}</td>
                                         <td>{{ el.petal_length }}</td>

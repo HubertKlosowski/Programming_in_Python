@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 
 from . import db
-from .models import Iris, Species
+from .models import Iris
 
 table = Blueprint('table', __name__)
 
@@ -16,18 +16,16 @@ def check_delete(form):
 
 @table.route('/', methods=['GET'])
 def home():
-    # iris = db.session.query(Iris, Species.species_name).join(Species, Iris.species_id == Species.id).all()
     iris = db.session.query(Iris).all()
     return render_template("table.html", iris=iris)
 
 
 @table.route('/get/<int:record_id>', methods=['GET'])
 def get(record_id):
-    iris = db.session.query(Iris, Species.species_name).join(Species, Iris.species_id == Species.id).filter(
-        Iris.id == record_id).first()
+    iris = Iris.query.get(record_id)
     if iris is None:
         return False
-    return True
+    return iris
 
 
 @table.route('/delete/<int:record_id>', methods=['POST'])
