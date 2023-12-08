@@ -73,9 +73,7 @@ def simulation(moves: dict, alive: int, sheeps: list, wolf: Wolf, i: int) -> int
         logging.info("Wolf ate sheep nr " + str(prey) + ".")
         alive_sheeps[prey].is_alive = False
         alive -= 1
-        round_info(alive_sheeps[prey], wolf, i, alive)
-    else:
-        round_info(alive_sheeps[prey], wolf, i, alive)
+    round_info(alive_sheeps[prey], wolf, i, alive)
     return alive
 
 
