@@ -47,23 +47,22 @@ def save_to_csv(round_num: int, alive: int):
     csv_file.close()
 
 
-def simulation(moves: dict, alive: int, sheeps: list, wolf: Wolf, prey: int, i: int) -> tuple:
+def simulation(moves: dict, alive: int, sheeps: list, wolf: Wolf, i: int) -> int:
     alive_sheeps = [sheep for sheep in sheeps if sheep.is_alive]
     for sheep in alive_sheeps:
         sheep.run(moves.get(random.randint(0, 3)))
         logging.debug("Sheep nr " + str(sheep.sheep_id) + " direction is: " + sheep.direction + ".")
         logging.debug("Sheep nr " + str(sheep.sheep_id) + " moved.")
     logging.info("All alive sheeps moved.")
-    if prey == -1:
-        try:
-            prey = wolf.pick_sheep(alive_sheeps)
-            logging.debug("Wolf picked sheep nr " + str(prey) + ".")
-            logging.debug("Distance to sheep nr " + str(prey) + " is: " +
-                          str(wolf.smallest_dist) + ".")
-        except ValueError:
-            logging.info("Simulation ended. All sheeps are dead.")
-            print("All sheeps are dead!")
-            exit(0)
+    try:
+        prey = wolf.pick_sheep(alive_sheeps)
+        logging.debug("Wolf picked sheep nr " + str(prey) + ".")
+        logging.debug("Distance to sheep nr " + str(prey) + " is: " +
+                      str(wolf.smallest_dist) + ".")
+    except ValueError:
+        logging.info("Simulation ended. All sheeps are dead.")
+        print("All sheeps are dead!")
+        exit(0)
     wolf.chase_sheep(alive_sheeps[prey])
     logging.debug("Wolf direction is: " + wolf.direction + ".")
     logging.debug("Wolf moved.")
@@ -75,10 +74,9 @@ def simulation(moves: dict, alive: int, sheeps: list, wolf: Wolf, prey: int, i: 
         alive_sheeps[prey].is_alive = False
         alive -= 1
         round_info(alive_sheeps[prey], wolf, i, alive)
-        prey = -1
     else:
         round_info(alive_sheeps[prey], wolf, i, alive)
-    return alive, prey
+    return alive
 
 
 def check_ini_file(config: configparser.ConfigParser) -> list:
@@ -140,10 +138,8 @@ def main():
     parser.add_argument("-w", "--wait", action="store_true", help="Press key to pause simulation")
     args = parser.parse_args()
     if not check_level(args.log):
-        logging.basicConfig(level=logging.ERROR, filename="chase.log",
+        logging.basicConfig(level=logging.INFO, filename="chase.log",
                             format="%(asctime)s %(levelname)s %(message)s")
-        logging.error("Error! Wrong log level!")
-        raise ValueError("Error! Wrong log level!")
     logging.basicConfig(level=logging.getLevelName(args.log.upper()), filename="chase.log",
                         format="%(asctime)s %(levelname)s %(message)s")
     num_of_rounds: int = args.rounds
@@ -161,10 +157,10 @@ def main():
         logging.debug("Initial position of sheep nr " + str(i) + " determined.")
     logging.info("Initial position of sheeps determined.")
     wolf = Wolf(info[2])
-    alive, prey = len(sheeps), -1
+    alive = len(sheeps)
     for i in range(num_of_rounds):
         logging.info("New rounded started. Round nr " + str(i))
-        alive, prey = simulation(moves, alive, sheeps, wolf, prey, i)
+        alive = simulation(moves, alive, sheeps, wolf, i)
         save_to_json(sheeps, wolf, i)
         logging.debug("Data saved to pos.json file.")
         save_to_csv(i, alive)
