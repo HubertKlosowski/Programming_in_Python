@@ -21,5 +21,8 @@ class Sheep:
             self.x -= self.speed
         self.direction = new_direction
 
+    def get_coordinates(self):
+        return [self.x, self.y]
+
     def __str__(self):
         return f"Sheep: x={self.x} y={self.y} direction={self.direction} speed={self.speed}"

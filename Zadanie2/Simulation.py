@@ -11,13 +11,13 @@ import logging
 
 def round_info(sheep: Sheep, wolf: Wolf, round_num: int, alive: int):
     print("-" * 20)
-    print("Round: ", round_num)
+    print("Round: ", round_num + 1)
     print("Wolf: ", format(wolf.x, ".3f"), format(wolf.y, ".3f"))
     print("Alive sheeps: ", alive)
     if sheep.is_alive:
-        print("Sheep nr", sheep.sheep_id, "is being chased")
+        print("Sheep nr", sheep.sheep_id + 1, "is being chased")
     else:
-        print("Sheep nr", sheep.sheep_id, "is eaten")
+        print("Sheep nr", sheep.sheep_id + 1, "is eaten")
 
 
 def save_to_json(sheeps: list, wolf: Wolf, round_num: int):
@@ -55,7 +55,7 @@ def simulation(moves: dict, alive: int, sheeps: list, wolf: Wolf, i: int) -> int
         logging.debug("Sheep nr " + str(sheep.sheep_id) + " moved.")
     logging.info("All alive sheeps moved.")
     try:
-        prey = wolf.pick_sheep(alive_sheeps)
+        prey = wolf.chase_sheep(alive_sheeps)
         logging.debug("Wolf picked sheep nr " + str(prey) + ".")
         logging.debug("Distance to sheep nr " + str(prey) + " is: " +
                       str(wolf.smallest_dist) + ".")
@@ -63,8 +63,6 @@ def simulation(moves: dict, alive: int, sheeps: list, wolf: Wolf, i: int) -> int
         logging.info("Simulation ended. All sheeps are dead.")
         print("All sheeps are dead!")
         exit(0)
-    wolf.chase_sheep(alive_sheeps[prey])
-    logging.debug("Wolf direction is: " + wolf.direction + ".")
     logging.debug("Wolf moved.")
     logging.info("Wolf is chasing sheep nr " + str(prey) + ".")
     if calculate_euclidean_distance(alive_sheeps[prey], wolf.x, wolf.y) <= 1:
