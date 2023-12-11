@@ -11,7 +11,7 @@ import logging
 
 def round_info(sheep: Sheep, wolf: Wolf, round_num: int, alive: int):
     print("-" * 20)
-    print("Round: ", round_num + 1)
+    print("Round: ", round_num)
     print("Wolf: ", format(wolf.x, ".3f"), format(wolf.y, ".3f"))
     print("Alive sheeps: ", alive)
     if sheep.is_alive:
@@ -154,7 +154,7 @@ def main():
     logging.info("Initial position of sheeps determined.")
     wolf = Wolf(info[2])
     alive = len(sheeps)
-    for i in range(num_of_rounds):
+    for i in range(1, num_of_rounds + 1):
         logging.info("New rounded started. Round nr " + str(i))
         alive = simulation(moves, alive, sheeps, wolf, i)
         save_to_json(sheeps, wolf, i)
