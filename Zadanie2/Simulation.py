@@ -150,7 +150,8 @@ def main():
     sheeps: list = []
     for i in range(args.sheep):
         sheeps.append(Sheep(i, spawn=info[0], speed=info[1]))
-        logging.debug("Initial position of sheep nr " + str(i) + " determined.")
+        logging.debug("Initial position of sheep nr " + str(i) + " determined. Coordinates: "
+                                                                 "[" + str(sheeps[i].x) + ", " + str(sheeps[i].y) + "]")
     logging.info("Initial position of sheeps determined.")
     wolf = Wolf(info[2])
     alive = len(sheeps)
