@@ -41,22 +41,3 @@ def delete(record_id):
         print(e)
         db.session.rollback()
         return render_template('404_error.html', error_message=str(e)), 404
-
-
-"""
-{% for el, name in iris %}
-                                    <tr>
-                                        <td>{{ el.id }}</td>
-                                        <td>{{ el.sepal_length }}</td>
-                                        <td>{{ el.sepal_width }}</td>
-                                        <td>{{ el.petal_length }}</td>
-                                        <td>{{ el.petal_width }}</td>
-                                        <td>{{ name }}</td>
-                                        <td>
-                                            <form action="{{ url_for('table.delete', record_id=el.id) }}" method="post">
-                                                <button type="submit" class="btn btn-danger">X</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-"""
