@@ -16,7 +16,7 @@ def check_predict(iris):
 
 
 @predict.route('/predict', methods=['GET'])
-def home():
+def home_page():
     return render_template("predict.html")
 
 

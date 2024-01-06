@@ -29,20 +29,21 @@ def create_iris(form):
 
 
 @add_form.route('/add_form', methods=['GET'])
-def home():
+def home_page():
     return render_template("add_form.html")
 
 
 @add_form.route('/add_form/add', methods=['POST'])
 def add():
     try:
+        print(request.form)
         check = check_add(request.form)
         if not check[1]:
             return render_template('400_error.html', error_message=check[0]), 400
         new_iris = create_iris(request.form)
         db.session.add(new_iris)
         db.session.commit()
-        return redirect(url_for('table.home'))
+        return redirect(url_for('table.home_page'))
     except Exception as e:
         print(e)
         db.session.rollback()

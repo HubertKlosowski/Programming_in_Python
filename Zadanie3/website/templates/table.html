@@ -23,8 +23,8 @@
     </head>
     <body>
         <div class="container">
-            <a href="{{ url_for('add_form.home') }}" class="btn btn-primary btn-lg">Add Iris</a>
-            <a href="{{ url_for('predict.home') }}" class="btn btn-dark btn-lg">Predict iris species</a>
+            <a href="{{ url_for('add_form.home_page') }}" class="btn btn-primary btn-lg">Add Iris</a>
+            <a href="{{ url_for('predict.home_page') }}" class="btn btn-dark btn-lg">Predict iris species</a>
             <div class="container mt-5">
                 <div class="row">
                     <div class="col-12">
@@ -41,7 +41,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for el in iris %}
+                                {% for el in irises %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ el.sepal_length }}</td>
