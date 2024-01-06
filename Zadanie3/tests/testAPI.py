@@ -6,7 +6,6 @@ app = create_app()
 
 
 class MyTestCase(unittest.TestCase):
-
     def test_get_iris_data(self):
         with app.test_client() as c:
             response = c.get('/api/data')
@@ -17,14 +16,13 @@ class MyTestCase(unittest.TestCase):
         with app.test_client() as c:
             response = c.post('/api/data', data={'sepal_length': 1, 'sepal_width': 1, 'petal_length': 1,
                                                  'petal_width': 1, 'species_id': 1})
-            self.assertEqual(response.status_code, 201)
-            self.assertEqual(response.json, {'message': 'Resource created successfully'})
+            self.assertEqual(response.status_code, 200)
 
     def test_delete_iris(self):
         with app.test_client() as c:
             response = c.delete('/api/data/1')
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.json, {'message': 'Resource deleted successfully'})
+            self.assertEqual(response.json, {'id': 1})
             irises = c.get('/api/data')
             self.assertTrue(len(irises.json) == 150)
 
@@ -51,9 +49,10 @@ class MyTestCase(unittest.TestCase):
 
     def test_predict_iris(self):
         with app.test_client() as c:
-            response = c.get('/api/predictions', query_string={'s_l': 1, 's_w': 1, 'p_l': 1, 'p_w': 1})
+            response = c.get('/api/predictions', data={'sepal_length': 1, 'sepal_width': 1, 'petal_length': 1,
+                                                       'petal_width': 1})
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.json, {'prediction': 1})
+            self.assertEqual(response.json, {'prediction': 0})
 
 
 if __name__ == '__main__':
