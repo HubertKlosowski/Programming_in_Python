@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, request
 
 from . import db
 from .models import Iris
+from .validation import check_add, create_iris, get_iris, check_predict
+from .trainingModel import train_model
 
 table = Blueprint('table', __name__)
 
@@ -15,10 +17,9 @@ def home_page():
 @table.route('/delete/<int:record_id>', methods=['POST'])
 def delete(record_id):
     try:
-        if not get_iris(record_id):
-            return render_template('404_error.html', error_message='Nie można usunąć irysa, '
-                                                                   'którego nie ma'), 404
-        to_delete = Iris.query.get(record_id)
+        to_delete = get_iris(record_id)
+        if isinstance(to_delete, str):
+            return render_template('404_error.html', error_message=to_delete), 404
         db.session.delete(to_delete)
         db.session.commit()
         return redirect(url_for('table.home_page'))
@@ -46,30 +47,22 @@ def add():
         return render_template('add_form.html')
 
 
-def create_iris(form):
-    return Iris(
-        sepal_length=float(form['sepal_length']),
-        sepal_width=float(form['sepal_width']),
-        petal_length=float(form['petal_length']),
-        petal_width=float(form['petal_width']),
-        species_id=int(form['species_id'])
-    )
-
-
-def check_add(form):
-    required_fields = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species_id']
-    for field in required_fields:
-        if field not in form or form[field] == '':
-            return 'Brak wymaganych pól', False
-        if field != 'species_id' and float(form[field]) <= 0:
-            return 'Wszystkie pola nie mogą być ujemne', False
-        if field == 'species_id' and int(form[field]) not in [0, 1, 2]:
-            return 'Id gatunku musi być 0, 1 lub 2', False
-    return 'Poprawne dane', True
-
-
-def get_iris(record_id):
-    iris = Iris.query.get(record_id)
-    if iris is None:
-        return False
-    return iris
+@table.route('/predict', methods=['GET', 'POST'])
+def predict():
+    if request.method == 'POST':
+        try:
+            iris = [float(request.form['sepal_length']), float(request.form['sepal_width']),
+                    float(request.form['petal_length']), float(request.form['petal_width'])]
+        except ValueError as e:
+            print(e)
+            return render_template('400_error.html', error_message=str(e)), 400
+        check = check_predict(iris)
+        if check[1]:
+            test_iris = Iris.query.all()
+            X = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in test_iris]
+            y = [i.species_id for i in test_iris]
+            return render_template("predict.html", result=train_model(X, y, [iris]))
+        else:
+            return render_template("predict.html", result=check[0])
+    else:
+        return render_template("predict.html")
