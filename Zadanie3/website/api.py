@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
 
 from . import db
-from .add_form import check_add, create_iris
 from .models import Iris
 from .predict import check_predict
 from .trainingModel import train_model
@@ -18,6 +17,7 @@ def get_iris_data():
     return jsonify(iris_data)
 
 
+"""
 @api.route('/api/data', methods=['POST'])
 def add_iris():
     try:
@@ -32,6 +32,7 @@ def add_iris():
         print(e)
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
+"""
 
 
 @api.route('/api/data/<int:record_id>', methods=['DELETE'])
