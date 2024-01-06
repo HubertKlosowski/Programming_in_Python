@@ -51,8 +51,8 @@ def add():
 def predict():
     if request.method == 'POST':
         try:
-            iris = [float(request.form['sepal_length']), float(request.form['sepal_width']),
-                    float(request.form['petal_length']), float(request.form['petal_width'])]
+            iris = [float(el) for el in request.form.values()]
+            print(iris)
         except ValueError as e:
             print(e)
             return render_template('400_error.html', error_message=str(e)), 400
@@ -60,8 +60,9 @@ def predict():
         if check[1]:
             test_iris = Iris.query.all()
             X = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in test_iris]
+            print(X[:5])
             y = [i.species_id for i in test_iris]
-            return render_template("predict.html", result=train_model(X, y, [iris]))
+            return render_template("predict.html", result=train_model(X, y, [iris], "min_max"))
         else:
             return render_template("predict.html", result=check[0])
     else:

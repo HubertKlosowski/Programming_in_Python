@@ -50,14 +50,13 @@ def delete_iris(record_id):
 def predict_iris():
     try:
         iris_data = [float(el) for el in request.form.values()]
-        iris_data[-1] = int(iris_data[-1])
         check = check_predict(iris_data)
         if not check[1]:
             return jsonify({'error': check[0]}), 400
         test_iris = db.session.query(Iris).all()
         X = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in test_iris]
         y = [i.species_id for i in test_iris]
-        return jsonify({'prediction': int(train_model(X, y, [iris_data]))}), 200
+        return jsonify({'prediction': int(train_model(X, y, [iris_data], "min_max"))}), 200
     except Exception as e:
         print(e)
         return jsonify({'error': str(e)}), 400
