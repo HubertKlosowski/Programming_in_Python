@@ -33,7 +33,7 @@ class MyTestCase(unittest.TestCase):
             response = c.post('/api/data', data={'sepal_length': 1, 'sepal_width': 1, 'petal_length': 1,
                                                  'petal_width': 1, 'species_id': 4})
             self.assertEqual(response.status_code, 400)
-            self.assertEqual(response.json, {'error': 'Species ID must be 1, 2, or 3'})
+            self.assertEqual(response.json, {'error': 'Species ID must be 0, 1, or 2'})
 
     def test_add_iris_with_missing_fields(self):
         with app.test_client() as c:

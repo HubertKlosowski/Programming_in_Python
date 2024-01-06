@@ -14,7 +14,7 @@ def check_add(form):
         if field != 'species_id' and float(form[field]) <= 0:
             return 'All fields have to be greater than 0', False
         if field == 'species_id' and int(form[field]) not in [0, 1, 2]:
-            return 'Species ID must be 1, 2, or 3', False
+            return 'Species ID must be 0, 1, or 2', False
     return 'Valid data', True
 
 
