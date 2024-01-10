@@ -1,14 +1,4 @@
-from .models import Iris
-
-
-def create_iris(form):
-    return Iris(
-        sepal_length=float(form['sepal_length']),
-        sepal_width=float(form['sepal_width']),
-        petal_length=float(form['petal_length']),
-        petal_width=float(form['petal_width']),
-        species_id=int(form['species_id'])
-    )
+from .model import Iris
 
 
 def check_add(form):
