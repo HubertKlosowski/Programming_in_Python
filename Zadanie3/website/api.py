@@ -3,7 +3,8 @@ from flask import Blueprint, request
 from . import db
 from .model import Iris, create_iris
 from .trainingModel import train_model
-from .validation import check_add, get_iris, check_predict
+from .validation import check_add, check_predict
+from .exceptions import DataValidationException
 
 api = Blueprint('api', __name__)
 
@@ -11,9 +12,10 @@ api = Blueprint('api', __name__)
 @api.route('/data', methods=['GET', 'POST'])
 def add_iris():
     if request.method == 'POST':
-        check = check_add(request.form)
-        if not check[1]:
-            return {'error': check[0]}, 400
+        try:
+            check_add(request.form)
+        except DataValidationException as e:
+            return {'error': e}, 400
         iris = create_iris(request.form)
         db.session.add(iris)
         db.session.commit()
@@ -28,8 +30,8 @@ def add_iris():
 
 @api.route('/data/<int:record_id>', methods=['DELETE'])
 def delete_iris(record_id):
-    to_delete = get_iris(record_id)
-    if isinstance(to_delete, str):
+    to_delete = Iris.query.get(record_id)
+    if to_delete is None:
         return {'error': to_delete}, 404
     db.session.delete(to_delete)
     db.session.commit()
@@ -44,10 +46,11 @@ def predict_iris():
     p_w = float(request.args.get('petal_width'))
 
     iris_data = [s_l, s_w, p_l, p_w]
-    check = check_predict(iris_data)
+    try:
+        check_predict(iris_data)
+    except DataValidationException as e:
+        return {'error': e}, 400
 
-    if not check[1]:
-        return {'error': check[0]}, 400
     train_iris = db.session.query(Iris).all()
     x_data = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in train_iris]
     y = [i.species_id for i in train_iris]
