@@ -8,7 +8,7 @@ from .validation import check_add, create_iris, get_iris, check_predict
 api = Blueprint('api', __name__)
 
 
-@api.route('/api/data', methods=['GET', 'POST'])
+@api.route('/data', methods=['GET', 'POST'])
 def add_iris():
     if request.method == 'POST':
         try:
@@ -31,7 +31,7 @@ def add_iris():
         return jsonify(iris_data)
 
 
-@api.route('/api/data/<int:record_id>', methods=['DELETE'])
+@api.route('/data/<int:record_id>', methods=['DELETE'])
 def delete_iris(record_id):
     try:
         to_delete = get_iris(record_id)
@@ -46,17 +46,23 @@ def delete_iris(record_id):
         return jsonify({'error': str(e)}), 400
 
 
-@api.route('/api/predictions', methods=['GET'])
+@api.route('/predictions', methods=['GET'])
 def predict_iris():
     try:
-        iris_data = [float(el) for el in request.form.values()]
+        s_l = float(request.args.get('sepal_length'))
+        s_w = float(request.args.get('sepal_width'))
+        p_l = float(request.args.get('petal_length'))
+        p_w = float(request.args.get('petal_width'))
+        iris_data = [s_l, s_w, p_l, p_w]
+
         check = check_predict(iris_data)
         if not check[1]:
             return jsonify({'error': check[0]}), 400
         test_iris = db.session.query(Iris).all()
-        X = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in test_iris]
+        x_data = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in test_iris]
         y = [i.species_id for i in test_iris]
-        return jsonify({'prediction': int(train_model(X, y, [iris_data], "min_max"))}), 200
+        prediction = int(train_model(x_data, y, [iris_data], None))
+        return jsonify({'prediction': prediction}), 200
     except Exception as e:
         print(e)
         return jsonify({'error': str(e)}), 400

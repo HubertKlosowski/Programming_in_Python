@@ -1,21 +1,9 @@
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
-from .models import Iris
-from . import db
-
-
-def count_species():
-    try:
-        species = db.session.query(Iris.species_id).distinct().all()
-        return len(species)
-    except Exception as e:
-        print(e)
-        return 0
 
 
 def train_model(x_train, y_train, x_test, scaler):
-    print("gatunki: ", count_species())
-    knn = KNeighborsClassifier(n_neighbors=count_species(), weights='distance', metric='euclidean')
+    knn = KNeighborsClassifier(n_neighbors=5)
     if scaler == 'standard':
         knn.fit(standard_scaler(x_train), y_train)
         predictions = knn.predict(standard_scaler(x_test))
