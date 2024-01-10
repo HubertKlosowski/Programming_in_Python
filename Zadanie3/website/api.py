@@ -15,7 +15,7 @@ def add_iris():
         try:
             check_add(request.form)
         except DataValidationException as e:
-            return {'error': e}, 400
+            return {'error': str(e)}, 400
         iris = create_iris(request.form)
         db.session.add(iris)
         db.session.commit()
@@ -49,7 +49,7 @@ def predict_iris():
     try:
         check_predict(iris_data)
     except DataValidationException as e:
-        return {'error': e}, 400
+        return {'error': str(e)}, 400
 
     train_iris = db.session.query(Iris).all()
     x_data = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in train_iris]
