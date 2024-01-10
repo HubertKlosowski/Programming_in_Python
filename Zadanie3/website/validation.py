@@ -18,4 +18,3 @@ def check_predict(iris):
             raise DataValidationException('All fields have to be numbers: [' + type(el) + ']')
         if el <= 0:
             raise DataValidationException('All fields have to be greater than 0: [' + str(el) + ']')
-    return 0

@@ -54,6 +54,7 @@ def predict():
         train_iris = Iris.query.all()
         x_data = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in train_iris]
         y = [i.species_id for i in train_iris]
-        return render_template('predict.html', result=train_model(x_data, y, [iris]))
+        prediction = int(train_model(x_data, y, [iris]))
+        return render_template('predict.html', result=prediction)
     else:
         return render_template('predict.html')
