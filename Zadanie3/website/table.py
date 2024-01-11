@@ -12,7 +12,7 @@ table = Blueprint('table', __name__)
 @table.route('/', methods=['GET'])
 def home_page():
     irises = db.session.query(Iris).all()
-    return render_template('table.html', irises=irises)
+    return render_template('table.html', irises=irises, subtitle='Iris dataset')
 
 
 @table.route('/delete/<int:record_id>', methods=['POST'])
@@ -36,7 +36,7 @@ def add():
         db.session.commit()
         return redirect(url_for('table.home_page'))
     else:
-        return render_template('add_form.html')
+        return render_template('add_form.html', subtitle='Add iris to database')
 
 
 @table.route('/predict', methods=['GET', 'POST'])
@@ -57,4 +57,4 @@ def predict():
         prediction = int(train_model(x_data, y, [iris]))
         return render_template('predict.html', result=prediction)
     else:
-        return render_template('predict.html')
+        return render_template('predict.html', subtitle='Predict iris species')
