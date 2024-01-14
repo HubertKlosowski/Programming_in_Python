@@ -55,6 +55,6 @@ def predict():
         x_data = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in train_iris]
         y = [i.species_id for i in train_iris]
         prediction = int(train_model(x_data, y, [iris]))
-        return render_template('predict.html', result=prediction)
+        return render_template('predict.html', result=prediction, subtitle='Predict iris species')
     else:
         return render_template('predict.html', subtitle='Predict iris species')
