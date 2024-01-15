@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request
 
 from . import db
 from .model import Iris, create_iris
-from .validation import check_add, check_predict
+from .validation import check_add, check_predict, check_for_knn
 from .trainingModel import train_model
 from .exceptions import DataValidationException
 
@@ -52,6 +52,11 @@ def predict():
             return render_template('predict.html', result=e)
 
         train_iris = Iris.query.all()
+        try:
+            check_for_knn(len(train_iris))
+        except DataValidationException as e:
+            return render_template('predict.html', result=e)
+
         x_data = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in train_iris]
         y = [i.species_id for i in train_iris]
         prediction = int(train_model(x_data, y, [iris]))

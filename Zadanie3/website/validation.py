@@ -18,3 +18,8 @@ def check_predict(iris):
             raise DataValidationException('All fields have to be numbers: [' + type(el) + ']')
         if el <= 0:
             raise DataValidationException('All fields have to be greater than 0: [' + str(el) + ']')
+
+
+def check_for_knn(num_neighbors):
+    if num_neighbors <= 5:
+        raise DataValidationException('Too little points for num_neighbors KNN')
