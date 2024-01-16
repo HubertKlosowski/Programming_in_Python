@@ -13,10 +13,10 @@ api = Blueprint('api', __name__)
 def add_iris():
     if request.method == 'POST':
         try:
-            check_add(request.form)
+            check_add(request.json)
         except DataValidationException as e:
             return {'error': str(e)}, 400
-        iris = create_iris(request.form)
+        iris = create_iris(request.json)
         db.session.add(iris)
         db.session.commit()
         return {'id': iris.id}
