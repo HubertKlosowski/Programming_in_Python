@@ -49,13 +49,13 @@ def predict():
         try:
             check_predict(iris)
         except DataValidationException as e:
-            return render_template('predict.html', result=e)
+            return render_template('predict.html', result=e, subtitle='Predict iris species')
 
         train_iris = Iris.query.all()
         try:
             check_for_knn(len(train_iris))
         except DataValidationException as e:
-            return render_template('predict.html', result=e)
+            return render_template('predict.html', result=e, subtitle='Predict iris species')
 
         x_data = [[i.sepal_length, i.sepal_width, i.petal_length, i.petal_width] for i in train_iris]
         y = [i.species_id for i in train_iris]

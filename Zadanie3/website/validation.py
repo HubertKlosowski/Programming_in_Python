@@ -21,5 +21,5 @@ def check_predict(iris):
 
 
 def check_for_knn(num_neighbors):
-    if num_neighbors <= 5:
+    if num_neighbors < 5:
         raise DataValidationException('Too little points for num_neighbors KNN')
